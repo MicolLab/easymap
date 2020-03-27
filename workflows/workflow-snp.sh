@@ -65,7 +65,7 @@ snp_analysis_type=${18}
 stringency=${20}
 
 #Set number of maximum CPU for steps compatible with multithreading, default = 1 
-threads=1
+threads=2
 
 # Set internal variables according to the SNP validation stringency chosen by the user
 if [ $stringency == high_stringency ]; then
@@ -895,6 +895,8 @@ fi
 #Intermediate files cleanup
 rm -f $f1/*.bam
 rm -f $f1/*.bai
+rm -f $f1/*.ht2
+rm -rf $f1/gnm_ref_merged
 if [ -d "$f1/sim_data" ]; then rm -Rf $f1/sim_data/; fi
 
 
