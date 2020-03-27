@@ -38,7 +38,7 @@
 start_time=`date +%s`	
 exit_code=0 				# Set 'exit_code' (flag variable) to 0
 my_log_file=$1 				# Set location of log file
-export location="$PWD" 			#Save path to bowtie2-build and bowtie2 in variable BT2
+export location="$PWD" 			#Save path to hisat2-build and hisat2 in variable BT2
 
 # Create input variables
 my_log_file=$1
@@ -69,11 +69,11 @@ threads=1
 
 # Set internal variables according to the SNP validation stringency chosen by the user
 if [ $stringency == high_stringency ]; then
-	problemSample_bowtie_mp="--mp 6,2"
+	#problemSample_bowtie_mp="--mp 6,2"
 	problemSample_mpileup_C="-C50"
 	problemSample_snpQualityTheshold="120"
 else
-	problemSample_bowtie_mp="--mp 3,2"
+	#problemSample_bowtie_mp="--mp 3,2"
 	problemSample_mpileup_C=""
 	problemSample_snpQualityTheshold="30"
 fi
@@ -88,6 +88,15 @@ f3=$project_name/3_workflow_output
 my_status_file=$f2/status
 echo 'pid workflow '$$ >> $my_status_file
 
+#Check genome size to set interval_width
+{
+	interval_width=`python2 $location/scripts_snp/set-interval.py -a $f1/$my_gs`
+} || {
+	interval_width=4000001
+	echo $(date "+%F > %T")': set-interval.py failed.' >> $my_log_file
+}
+echo $(date "+%F > %T")': set-interval.py finished, interval set at: '$interval_width   >> $my_log_file
+
 
 ##################################################################################################################################################################################
 #																																												 #
@@ -97,47 +106,47 @@ echo 'pid workflow '$$ >> $my_status_file
 #																																												 #
 ##################################################################################################################################################################################
 
-#Run bowtie2-build on genome sequence 
+#Run hisat2-build on genome sequence 
 {
-	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
+	$location/hisat2/hisat2-build $f1/$my_gs $f1/$my_ix 1> $f2/hisat2-build_std1.txt 2> $f2/hisat2-build_std2.txt
 
 } || {
-	echo $(date "+%F > %T")': Bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
+	echo $(date "+%F > %T")': hisat2-build on genome sequence returned an error. See log files.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date "+%F > %T")': Bowtie2-build finished.' >> $my_log_file
+echo $(date "+%F > %T")': hisat2-build finished.' >> $my_log_file
 
 function get_problem_va {  
 	if [ $my_sample_mode == se ] 
 	then
-		#Run bowtie2 unpaired to align raw F2 reads to genome 
+		#Run hisat2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 -p $threads --very-sensitive $problemSample_bowtie_mp -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
+			$location/hisat2/hisat2 -p $threads -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/hisat2_problem-sample_std2.txt
 
 		} || {
-			echo $(date "+%F > %T")': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
+			echo $(date "+%F > %T")': hisat2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
 			exit_code=1
 			echo $exit_code
 			exit
 		}
-		echo $(date "+%F > %T")': Bowtie2 finished the alignment of F2 reads to genome.' >> $my_log_file
+		echo $(date "+%F > %T")': hisat2 finished the alignment of F2 reads to genome.' >> $my_log_file
 	fi
 
 	if [ $my_sample_mode == pe ] 
 	then
-		#Run bowtie2 paired to align raw F2 reads to genome 
+		#Run hisat2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2  -p $threads --very-sensitive  $problemSample_bowtie_mp -X 1000  -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
+			$location/hisat2/hisat2  -p $threads  -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/hisat2_problem-sample_std2.txt
 
 		} || {
-			echo $(date "+%F > %T")': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
+			echo $(date "+%F > %T")': hisat2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
 			exit_code=1
 			echo $exit_code
 			exit
 		}
-		echo $(date "+%F > %T")': Bowtie2 finished the alignment of F2 reads to genome.' >> $my_log_file
+		echo $(date "+%F > %T")': hisat2 finished the alignment of F2 reads to genome.' >> $my_log_file
 	fi
 
 	#SAM to BAM
@@ -227,32 +236,32 @@ function get_problem_va {
 function get_control_va { 
 	if [ $my_control_mode == se ] 
 	then
-		#Run bowtie2 unpaired to align raw F2 reads to genome 
+		#Run hisat2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2  -p $threads --very-sensitive  -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
+			$location/hisat2/hisat2  -p $threads  -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/hisat2_control-sample_std2.txt
 
 		} || {
-			echo $(date "+%F > %T")': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
+			echo $(date "+%F > %T")': hisat2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
 			exit_code=1
 			echo $exit_code
 			exit
 		}
-		echo $(date "+%F > %T")': Bowtie2 finished the alignment of control reads to genome.' >> $my_log_file
+		echo $(date "+%F > %T")': hisat2 finished the alignment of control reads to genome.' >> $my_log_file
 	fi
 
 	if [ $my_control_mode == pe ] 
 	then
-		#Run bowtie2 paired to align raw F2 reads to genome 
+		#Run hisat2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2  -p $threads --very-sensitive --mp 3,2  -X 1000  -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
+			$location/hisat2/hisat2  -p $threads  -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/hisat2_control-sample_std2.txt
 
 		} || {
-			echo $(date "+%F > %T")': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
+			echo $(date "+%F > %T")': hisat2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
 			exit_code=1
 			echo $exit_code
 			exit
 		}
-		echo $(date "+%F > %T")': Bowtie2 finished the alignment of control reads to genome.' >> $my_log_file
+		echo $(date "+%F > %T")': hisat2 finished the alignment of control reads to genome.' >> $my_log_file
 	fi
 
 	#SAM to BAM
@@ -451,7 +460,7 @@ function cr_analysis {
 	# python2 ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -cross bc -snp_analysis_type par  
 	# (6) Create graphic output
 	{
-		python2 $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python2 $location/graphic_output/graphic-output.py -my_mut $my_mut  -interval_width $interval_width  -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 		
 	} || {
 		echo $(date "+%F > %T")': Error during execution of graphic-output.py .' >> $my_log_file
@@ -529,7 +538,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 600000 -window_space 500000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 600000 -window_space 500000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -599,7 +608,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 350000 -window_space 250000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type par  2>> $my_log_file
+			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 350000 -window_space 250000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type par  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -682,7 +691,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 
 		} || {
@@ -772,7 +781,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison_mapping.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -845,7 +854,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison_mapping.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file

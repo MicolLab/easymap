@@ -1,0 +1,12 @@
+hisat2/
+config/config
+user_projects/
+user_data/
+*/*.pyc
+*/tmp_upload_files
+src/
+bowtie2/
+graphic_output/Pillow-4.2.1/
+bcftools-1.3.1/
+samtools1/
+*nohup*

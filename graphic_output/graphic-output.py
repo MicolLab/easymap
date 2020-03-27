@@ -11,6 +11,7 @@ parser.add_argument('-asnp', action="store", dest = 'input_snp')
 parser.add_argument('-bsnp', action="store", dest = 'input_f_snp')		#Fasta genome input
 parser.add_argument('-snp_analysis_type', action="store", dest='my_snp_analysis_type')
 parser.add_argument('-cross', action="store", dest='my_cross')
+parser.add_argument('-interval_width', action="store", dest='interval_width')
 
 #INPUT VARIABLES FOR LIN
 parser.add_argument('-a', action="store", dest = 'input')		
