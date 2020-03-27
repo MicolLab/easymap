@@ -1,0 +1,63 @@
+/*
+This style sheet contains style declarations written specially for easymap 
+The other style sheet (w3c.css) contains the styles for the template used, which
+was also created by the W3C.
+*/
+
+/* Buttons */
+.button {
+	display: block;
+	float: left;
+	width: 200px;
+	padding: 12px 20px;
+	margin: 8px 5px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #3366ff;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	font-size: 15px;
+}
+
+.button:hover {
+	border-color: #737373;
+	background-color: #668cff;
+}
+
+.button:focus {
+	border-color: #737373;
+	background-color: red;
+}
+
+.managing-buttons:after {          
+	content: "";
+	display: block;
+	clear: both;
+}
+
+/* Styles for the list with user input files */
+
+.files-item {
+	display: block;
+	float:left;
+	width: 33%;
+}
+
+#left { width: 45%; }
+#center { width: 15%; }
+#right { width: 20%; }
+
+#files-separator {
+	clear: both;
+	margin: 7px 0;
+}
+
+/* Styles for the warning messages to user */
+
+.warningMessage {
+	display:none;
+	margin:5px 0;
+	padding:20px;
+	background-color: red;
+}

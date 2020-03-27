@@ -1,0 +1,152 @@
+/* This may be dispensable */
+/*
+[unselectable] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+*/
+
+#runNewProject {
+	font-family: Arial; /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	font-size: 17px;
+	color: #333333;
+}
+/*
+#formLeft, #formRight {
+	display: inline-block;
+	width: 49%;
+	vertical-align: top;
+	padding: 3px;
+}
+
+#formRight {
+	border: 1px solid gray;
+	border-radius: 5px;
+}
+
+#formButtons {
+	vertical-align: top;
+	padding: 3px;
+}
+*/
+
+/* By default do not display the following divs. They must only be displayed 
+after the user has selected a mode, the source of the data, and the library type */
+#insSeqSelector,
+#expDataInterface,
+#simDataInterface,
+#expDataIns,
+#expDataSnp,
+#simDataIns,
+#simDataSnp,
+#expDataSnpInfo,
+#expDataSingle,
+#expDataPaired,
+#expDataSingleTwosamples,
+#expDataPairedTwosamples,
+#simSeqFL {
+	display: none;
+}
+
+/* Temporary div that shows the command arguments */
+#command > p {
+	font-family: monospace;
+	font-size: 12px;
+}
+
+/* Styles for divs that act as button wraps */
+.buttons-wrap {
+	margin-top: 10px;
+	margin-bottom: 15px;
+}
+
+
+/*
+Radio buttons and their labels. The radio buttons are hidden and instead their 
+labels appear as buttons to the user. This is a workaround to create css-only mutually
+exclusive button choices.
+*/
+.mx-button input {
+    display: none;
+}
+
+.mx-button {
+    float: left;
+    padding: 10px;
+}
+
+.clear-floats {
+	clear: both;
+}
+
+.mx-button label {
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    padding: 12px 20px;
+}
+
+.mx-button label:hover {
+    background-color: #ddd;
+}
+
+.mx-button input:checked + label {
+    background: #668cff;
+    color: white;
+}
+
+/* Text and select inputs */
+input[type=text], select {
+	width: 75%;
+	padding: 8px 12px;
+	margin: 8px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+input[type=text]:hover {
+	border-color: #737373;
+}
+
+input[type=text]:focus {
+	border: 1px solid #737373;
+	background-color: #f2f2f2;
+}
+
+.simNumericInput {
+	width: 75px;
+}
+
+
+/* Buttons */
+.button {
+	width: 30%;
+	padding: 12px 20px;
+	margin: 8px 0;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	background-color: #3366ff;
+	color: white;
+}
+
+.button:hover {
+	border-color: #737373;
+	background-color: #668cff;
+}
+
+.button:focus {
+	border-color: #737373;
+	background-color: red;
+}
+
+
+
+
+
+
+
+

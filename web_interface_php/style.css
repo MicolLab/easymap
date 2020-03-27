@@ -1,0 +1,261 @@
+/*
+This style sheet contains style declarations written specially for easymap 
+The other style sheet (w3c.css) contains the styles for the template used, which
+was also created by the W3C.
+*/
+
+/* Buttons */
+.button {
+	display: block;
+	float: left;
+	width: 200px;
+	padding: 12px 20px;
+	margin: 8px 5px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #3366ff;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	font-family: "Poppins", sans-serif;
+	font-weight:400;
+	font-size: 15px;
+	cursor:pointer;
+}
+
+.button:hover {
+	border-color: #365d9b;
+	background-color: #668cff;
+}
+
+.button:focus {
+	border-color: #737373;
+	background-color: red;
+}
+
+.managing-buttons:after {          
+	content: "";
+	display: block;
+	clear: both;
+}
+
+/* Styles for the list with user input files */
+
+.files-item {
+	display: block;
+	float:left;
+	width: 33%;
+}
+
+.left { width: 55%; }
+.center { width: 8%; }
+.right1 { width: 12%; }
+.right2 { width: 15%; }
+
+.files-separator {
+	clear: both;
+	margin: 20px 0 7px 0;
+	border: 1px solid rgb(200,200,200);
+}
+
+/* Styles for the messages to user */
+
+.warningMessage {
+	display:none;
+	margin:5px 0;
+	padding:12px 20px;
+	background-color: #f76f6f;
+	/*color:white;*/
+	border-radius: 5px;
+}
+
+.emptyResult {
+	display:block;
+	margin:30px 0;
+	padding:60px 40px;
+	background-color: #77d197;
+	border-radius: 5px;
+}
+
+.checkout {
+	display:none;
+	clear: both;
+	margin:15px 0;
+	padding:20px;
+	border-radius: 5px;
+}
+
+#checkout-error {
+	background-color: #f76f6f;
+}
+
+#checkout-success {
+	background-color: #77d197;
+}
+
+.formInfo {
+	clear: both;
+	margin: 20px 0 15px 0;
+	border-top: 4px solid rgb(130,130,130);
+	padding:12px 20px;
+	border-radius: 0 0 5px 5px;
+	background-color: #77d197;
+	width: 100%;
+}
+
+
+
+/* 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+THE FOLLOWING DECLARATIONS WERE PREVIOUSLY IN A SEPARATE FILE APPLICABLE ONLY TO run-new-project.php.
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+/* This may be dispensable */
+/*
+[unselectable] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+*/
+
+#runNewProject {
+	font-family: Arial; /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	font-size: 17px;
+	color: #333333;
+}
+
+/* By default do not display the following divs. They must only be displayed 
+after the user has selected a mode, the source of the data, and the library type */
+#insSeqField,
+#expDataInterface,
+#simDataInterface,
+#readsControl,
+#simSeqFL {
+	display: none;
+}
+
+/* Temporary div that shows the command arguments */
+#command > p {
+	font-family: monospace;
+	font-size: 12px;
+}
+
+/* Styles for divs that act as button wraps */
+.buttons-wrap {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+/*
+Radio buttons and their labels. The radio buttons are hidden and instead their 
+labels appear as buttons to the user. This is a workaround to create css-only mutually
+exclusive button choices.
+*/
+.mx-button input {
+    display: none;
+}
+
+.mx-button {
+    float: left;
+    padding: 10px;
+}
+
+.clear-floats {
+	clear: both;
+}
+
+.mx-button label {
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    padding: 12px 20px;
+}
+
+.mx-button label:hover {
+    background-color: #ddd;
+    border-color:#848484;
+}
+
+.mx-button input:checked + label {
+    background: #668cff;
+    color: white;
+    border-color:#365d9b;
+}
+
+/* Text and select inputs */
+input[type=text], select {
+	width: 75%;
+	padding: 8px 12px;
+	margin: 8px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+input[type=text]:hover, select:hover {
+	border-color: #737373;
+}
+
+input[type=text]:focus {
+	border: 1px solid #737373;
+	background-color: #f2f2f2;
+}
+
+.simNumericInput {
+	width: 75px;
+}
+
+
+/* Styles for the checkbox */
+
+#checkBoxStringency {
+	margin: 12px 0 20px 0;
+	margin-left: 5px;
+}
+
+input[type="checkbox"].switch_1{
+	font-size: 20px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 3.5em;
+	height: 1.5em;
+	background: #ddd;
+	border-radius: 3em;
+	position: relative;
+	cursor: pointer;
+	outline: none;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+  }
+  
+  input[type="checkbox"].switch_1:checked{
+	background: #3366ff;
+  }
+  
+  input[type="checkbox"].switch_1:after{
+	position: absolute;
+	content: "";
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 50%;
+	background: #fff;
+	-webkit-box-shadow: 0 0 .25em rgba(0,0,0,.3);
+	        box-shadow: 0 0 .25em rgba(0,0,0,.3);
+	-webkit-transform: scale(.7);
+	        transform: scale(.7);
+	left: 0;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+  }
+  
+  input[type="checkbox"].switch_1:checked:after{
+	left: calc(100% - 1.5em);
+  }
+
+
+
+

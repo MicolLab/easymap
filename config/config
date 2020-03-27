@@ -1,0 +1,24 @@
+#######################################################################################
+#
+# This file lets machine administrator set some configuration parameters:
+# -Password to have access through http to easymap
+# -Users maximum memory usage
+#
+####################################################################################### 
+
+# Password to have access to the web interface
+
+web-interface-password:0000
+
+# Maximum number (integer or float) of gigabytes allowed in folders user_data and
+# user_projects.
+# To make it unlimited, set it to 0.
+# If the maximum is reached, easymap does not allow starting new projects
+
+user_projects-size-limit:0
+
+# Maximum number (integer) of simultaneos jobs allowed.
+# To make it unlimited, set it to 0.
+# If the maximum is reached, easymap does not allow starting new projects
+
+max-simultaneous-jobs:0

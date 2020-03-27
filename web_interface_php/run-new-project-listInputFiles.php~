@@ -1,0 +1,74 @@
+<?php
+
+// Set some flag variables needed later. These flgs indicate whether there are files with certain
+// file extensions
+$flag_generic = false;
+$flag_fasta = false;
+$flag_fastq = false;
+
+// Set some empty arrays that will contain the names of the files
+$files_fasta = array();
+$files_fastq = array();
+$files_otherFiles = array();
+$all_files = array();
+
+// Define arrays that contain the file extensions supported for reference sequence ad read files
+$extensions_fasta = array(".fa", ".fas", ".fasta");
+$extensions_fastq = array(".fq", "fasq", ".fastq");
+
+// Get in an array all items in 'user_data' directory excluding references
+// to self (.) and parent (..) dirs
+$user_input_files = array_slice(scandir('../user_data'), 2);
+
+// Determine whether there are any files at all
+if (count($user_input_files) == 0) {
+	echo "bad";
+} else {
+	echo "oks";
+	
+	$flag_generic = true;
+	
+	// Determine whether there are files with the expected file extensions
+	foreach ($user_input_files as $filename) {
+		// Get the position (0-based) of last dot in file name
+		$last_dot_pos = strrpos($filename, ".");
+		// Get the extension of the file
+		$extension = substr($filename, $last_dot_pos);
+		
+		if (in_array($extension, $extensions_fasta)) {
+			$flag_fasta = true;
+			array_push($files_fasta, $filename);
+		} else if (in_array($extension, $extensions_fastq)) {
+			$flag_fastq = true;
+			array_push($files_fastq, $filename);
+		} else {
+			array_push($files_otherFiles, $filename);
+		}
+	}
+	
+	echo "<pre>"; print_r($files_fasta); echo "</pre>";
+	echo "<pre>"; print_r($files_fastq); echo "</pre>";
+	echo "<pre>"; print_r($files_otherFiles); echo "</pre>";
+}
+
+array_push($all_files, $files_fasta)
+echo "<pre>"; print_r($all_files); echo "</pre>";
+
+/*
+// If files with the expected extension exist in ../user_data folder, display a menu to select multiples files; if not, 
+// display a warning message
+if ($flag == true) {
+	//echo "<select multiple>";
+	// For each files with .fa, .fas, or .fasta extension, create an HTML tag to send to the interface
+	foreach ($user_input_files as $filename) {
+		if (in_array(substr($filename, strrpos($filename, ".")), $extensions_refSeqs)) {
+			//echo '<option value="'. $filename .'">'. $filename .'</option>';
+		}
+	}
+	//echo "</select>";
+} else {
+	//echo '<div class="warningMessage" style="display:block;">There are no files available with the expected extensions (".fa", ".fas", ".fasta"). Please go to page "Manage input files" to fix this.</div>';
+}
+*/
+
+?>

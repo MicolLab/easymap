@@ -1,0 +1,24 @@
+{
+	"SimMut": {
+		"NumberMutations":"100"
+	},
+	"SimRecsel": {
+		"ContigCausalMutation":"1",
+		"PositionCausalMutation":"30000",
+		"NumberRecombinantChromosomes":"100",
+		"RecombinationFrequencies": {
+			"1":"0,24-1,42-2,25-3,6-4,1-5,2"
+		}
+	},
+	"SimSeq": {
+		"Library":"se",
+		"FragmentSize":"500",
+		"FragmentSd":"100",
+		"ReadDepth":"20",
+		"ReadSize":"100",
+		"ReadSd":"0",
+		"ErrorRate":"1",
+		"GCbias":"50"
+	}
+}
+
