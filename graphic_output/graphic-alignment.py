@@ -18,9 +18,11 @@ def read_file(f):
 			lines = lines.rstrip()
 			column = lines.split("\t")
 			if int(column[2]) in dic:
-				dic[int(column[2])]+=1
+				if not int(column[2]) == 0:
+					dic[int(column[2])]+=1
 			else:
-				dic[int(column[2])] = 1
+				if not int(column[2]) == 0:
+					dic[int(column[2])] = 1
 
 
 	list_of_values= dic.values()
