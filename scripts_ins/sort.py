@@ -164,6 +164,7 @@ if args.mode == 'pe':
 		max_pos = 0
 		min_pos = float('inf')
 		local = "false"
+		span = None
 
 		for l, line in enumerate(lines):
 			if not line.startswith('@'):
