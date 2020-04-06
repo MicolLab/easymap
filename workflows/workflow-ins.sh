@@ -511,9 +511,10 @@ fi
 
 } || {
 	echo $(date "+%F > %T")': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
+	av_rd=10
+	#exit_code=1
+	#echo $exit_code
+	#exit
 }
 
 
