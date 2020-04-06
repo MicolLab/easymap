@@ -346,9 +346,9 @@ function depth_alignment {
 
 	} || {
 		echo $(date "+%F > %T")': Error during obtaining of alignment depth .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
+		#exit_code=1
+		#echo $exit_code
+		#exit
 	}
 
 	{
@@ -356,9 +356,10 @@ function depth_alignment {
 
 	} || {
 		echo $(date "+%F > %T")': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
+		av_rd=20			#SDL - simple bypass
+		#exit_code=1
+		#echo $exit_code
+		#exit
 	}
 }
 
