@@ -1,4 +1,4 @@
-#!src/Python-2.7.12/.localpython/bin/python2
+#!src/Python-2.7.18/.localpython/bin/python2
 
 import cgi, os, shutil, subprocess
 import cgitb; cgitb.enable()

@@ -1,4 +1,4 @@
-#!src/Python-2.7.12/.localpython/bin/python2
+#!src/Python-2.7.18/.localpython/bin/python2
 
 '''
 This file is mostly the same as config/allow-new-project.py. Several issues prevented

@@ -3,4 +3,4 @@
 
 port=$1
 
-nohup ./src/Python-2.7.12/.localpython/bin/python2 -m CGIHTTPServer $port &
+nohup ./src/Python-2.7.18/.localpython/bin/python2 -m CGIHTTPServer $port &

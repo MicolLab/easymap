@@ -83,12 +83,12 @@ if [ -d src ]; then rm -rf src; fi
 mkdir src
 cd src
 
-# Get Python-2.7.12
-wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
-tar -zxvf Python-2.7.12.tgz
+# Get Python-2.7.18
+wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+tar -zxvf Python-2.7.18.tgz
 
-# Install Python-2.7.12
-cd Python-2.7.12
+# Install Python-2.7.18
+cd Python-2.7.18
 [ -d .localpython ] || mkdir .localpython
 ./configure --prefix=$PWD/.localpython
 make
@@ -101,10 +101,10 @@ tar -zxvf virtualenv-15.1.0.tar.gz
 
 # Install virtualenv-15.1.0
 cd virtualenv-15.1.0/
-../Python-2.7.12/.localpython/bin/python setup.py install
+../Python-2.7.18/.localpython/bin/python setup.py install
 
 # Create virtual environment "easymap-env"
-../Python-2.7.12/.localpython/bin/python virtualenv.py easymap-env -p ../Python-2.7.12/.localpython/bin/python
+../Python-2.7.18/.localpython/bin/python virtualenv.py easymap-env -p ../Python-2.7.18/.localpython/bin/python
 
 # Install Pillow with pip
 [ -d cache ] || mkdir cache
@@ -120,7 +120,7 @@ sudo chmod -R 777 .
 
 # In file 'easymap', set absolute path to the Python binaries of the virtual environment
 # Rest of Python scripts don't need this because are executed after easymap.sh activates the virtual environment
-#sed -i -e "s~ABS_PATH_ENV_PYTHON~${PWD}/src/Python-2.7.12/.localpython/bin/python2~g" easymap
+#sed -i -e "s~ABS_PATH_ENV_PYTHON~${PWD}/src/Python-2.7.18/.localpython/bin/python2~g" easymap
 
 ################################################################################
 
@@ -140,10 +140,10 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 	if [ $1 == server ]; then
 		
 		# Run server in the background
-		nohup ./src/Python-2.7.12/.localpython/bin/python2 -m CGIHTTPServer $port &
+		nohup ./src/Python-2.7.18/.localpython/bin/python2 -m CGIHTTPServer $port &
 		
 		# Modify/create the etc/crontab file to always start easymap server at bootup
-		echo "@reboot   root    cd $PWD; ./src/Python-2.7.12/.localpython/bin/python2 -m CGIHTTPServer $port" >> /etc/crontab
+		echo "@reboot   root    cd $PWD; ./src/Python-2.7.18/.localpython/bin/python2 -m CGIHTTPServer $port" >> /etc/crontab
 
 		# Save port number to /config/port for future reference for the user
 		echo $port > config/port
