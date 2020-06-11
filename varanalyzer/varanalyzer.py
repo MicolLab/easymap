@@ -373,7 +373,7 @@ for variant_info in variants_info:
 				
 				if input_type == 'lim':
 					#Determine position of insertion in protein sequence
-					result_nt_position = full_cds_seq_mt.find('-') + 1
+					result_nt_position = int(float(full_cds_seq_mt.find('-') + 1)/3)
 					
 					# Write info as a comma-separated list to the list 'variants_info2'
 					condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit, result_nt_position, '-', '-'
