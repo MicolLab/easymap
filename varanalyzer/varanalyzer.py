@@ -345,8 +345,8 @@ for variant_info in variants_info:
 										cds_seq_list_mt.append(reverse_complementary(cds_seq))					
 				
 				# Reconstruct the coding sequence of the mutant gene
-				full_cds_seq_wt = ''.join(cds_seq_list_wt)
-				full_cds_seq_mt = ''.join(cds_seq_list_mt)
+				full_cds_seq_wt = (''.join(cds_seq_list_wt)).upper()
+				full_cds_seq_mt = (''.join(cds_seq_list_mt)).upper()
 					
 				if input_type == 'snp':	
 					# Translate the coding sequences of the wild type and mutant genes
@@ -432,7 +432,7 @@ for variant_info in variants_info:
 			# Write info as a comma-separated list to the list 'variants_info2'
 			condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], intron_result, '-', '-', '-'
 			variants_info2.append(condensed_info)
-	
+
 		# Introns in and lim input type
 		else:
 			# If transcriptional unit is hit but is neither in cds or in intron
