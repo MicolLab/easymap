@@ -190,7 +190,7 @@ if ann_file != "n/p":
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 
-SNPexperimentalDesignsAllowed = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'noref_bc_f2wt', 'noref_oc_parmut', 'n/p']
+SNPexperimentalDesignsAllowed = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'noref_bc_f2wt', 'noref_oc_parmut', 'ref_oc_polstr', 'n/p']
 
 if workflow == "snp":
 	if args.exp_design == "n/p":
