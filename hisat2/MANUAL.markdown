@@ -776,7 +776,7 @@ Sets maximum intron length. Default: 500000
 </td><td>
 
 With this mode, you can provide a list of known splice sites, which HISAT2 makes use of to align reads with small anchors.   
-You can create such a list using `python hisat2_extract_splice_sites.py genes.gtf > splicesites.txt`,
+You can create such a list using `python3 hisat2_extract_splice_sites.py genes.gtf > splicesites.txt`,
 where `hisat2_extract_splice_sites.py` is included in the HISAT2 package, `genes.gtf` is a gene annotation file,
 and `splicesites.txt` is a list of splice sites with which you provide HISAT2 in this mode.
 Note that it is better to use indexes built using annotated transcripts (such as <i>genome_tran</i> or <i>genome_snp_tran</i>), which works better

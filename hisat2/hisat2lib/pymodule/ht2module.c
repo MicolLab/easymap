@@ -44,8 +44,8 @@ static PyObject *conv_refnames_result(struct ht2_index_getrefnames_result *resul
     }
 
     refnames = PyList_New(result->count);
-    for(i = 0; i < result->count; i++) {
-        PyObject *str = PyString_FromString(result->names[i]);
+    for(i = 0; i < (size_t)result->count; i++) {
+        PyObject *str = PyUnicode_FromString(result->names[i]);
         PyList_SetItem(refnames, i, str);
     }
 
@@ -62,7 +62,7 @@ static PyObject *conv_repeat_expand_result(struct ht2_repeat_expand_result *resu
     }
 
     positions = PyList_New(result->count);
-    for(i = 0; i < result->count; i++) {
+    for(i = 0; i < (size_t)result->count; i++) {
         struct ht2_position *htpos = &result->positions[i];
 
         PyList_SetItem(positions, i, 
@@ -110,7 +110,7 @@ static void update_ht2_options(ht2_option_t *ht2opt, PyObject *py_opt)
 	do {\
 		PyObject *p;\
 		if((p = PyDict_GetItemString((_pobj), #_name)) != NULL) { \
-			(_ht2opt)->_name = PyInt_AsLong(p); \
+			(_ht2opt)->_name = PyLong_AsLong(p); \
 			DEBUGLOG(#_name " %d\n", (ht2opt)->_name); \
 			if(PyErr_Occurred() != NULL) { \
 				DEBUGLOG("Error Occurred"); \
@@ -325,9 +325,16 @@ static PyMethodDef myMethods[] = {
 	{NULL, NULL, 0, NULL}
 };
 
+static struct PyModuleDef ht2py_module = {
+	PyModuleDef_HEAD_INIT,
+	"ht2py",
+	NULL,
+	-1,
+	myMethods
+};
 
 PyMODINIT_FUNC
-initht2py(void)
+PyInit_ht2py(void)
 {
-	(void)Py_InitModule("ht2py", myMethods);
+	return PyModule_Create(&ht2py_module);
 }

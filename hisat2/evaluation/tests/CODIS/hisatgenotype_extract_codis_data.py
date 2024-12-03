@@ -1,1 +1,5 @@
+from hisat2 import hisatgenotype_modules
+from hisat2.hisatgenotype_scripts import hisatgenotype_extract_codis_data
+
+
 hisatgenotype_modules/hisatgenotype_extract_codis_data.py

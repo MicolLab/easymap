@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys, os, subprocess
 import multiprocessing
@@ -154,7 +154,7 @@ def evaluate(read_fname,
             if aligner == "hisat2" and index_type != "":
                 aligner_name += ("_" + index_type)
             two_step = (aligner == "tophat2" or type == "x2" or (aligner in ["hisat2", "hisat"] and type == ""))
-            print >> sys.stderr, "\t%s\t%s" % (aligner_name, str(datetime.now()))
+            print("\t%s\t%s" % (aligner_name, str(datetime.now())), file=sys.stderr)
             if paired:
                 aligner_dir = aligner_name + "_paired"
             else:
@@ -170,7 +170,7 @@ def evaluate(read_fname,
             aligner_cmd = get_aligner_cmd(aligner, type, index_type, version, "../" + type_read1_fname, "../" + type_read2_fname, out_fname)
             start_time = datetime.now()
             if verbose:
-                print >> sys.stderr, "\t", start_time, " ".join(aligner_cmd)
+                print("\t", start_time, " ".join(aligner_cmd), file=sys.stderr)
             if aligner in ["hisat2", "hisat", "bowtie", "bowtie2", "gsnap", "bwa"]:
                 proc = subprocess.Popen(aligner_cmd, stdout=open(out_fname, "w"), stderr=subprocess.PIPE)
             else:
@@ -180,7 +180,7 @@ def evaluate(read_fname,
             duration = finish_time - start_time
             duration = duration.total_seconds()
             if verbose:
-                print >> sys.stderr, "\t", finish_time, "finished:", duration
+                print("\t", finish_time, "finished:", duration, file=sys.stderr)
 
             assert os.path.exists(out_fname)
             correct_reads, correct_multi_reads, num_reads = 0, 0, 0
@@ -205,8 +205,8 @@ def evaluate(read_fname,
 
                 prev_read_id = read_id
 
-            print >> sys.stderr, "\tfirst: %d / %d (%.2f%%)" % (correct_reads, num_reads, float(correct_reads)/num_reads*100)
-            print >> sys.stderr, "\tall: %d / %d (%.2f%%)" % (correct_multi_reads, num_reads, float(correct_multi_reads)/num_reads*100)
+            print("\tfirst: %d / %d (%.2f%%)" % (correct_reads, num_reads, float(correct_reads)/num_reads*100), file=sys.stderr)
+            print("\tall: %d / %d (%.2f%%)" % (correct_multi_reads, num_reads, float(correct_multi_reads)/num_reads*100), file=sys.stderr)
 
             os.chdir("..")
 
@@ -228,5 +228,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     evaluate(args.read_fname,
              args.verbose)
-
-    

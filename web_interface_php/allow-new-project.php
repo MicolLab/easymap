@@ -1,7 +1,7 @@
 <?php
 
 // Run allow-new-project.py, get output, and send it to whichever script that calls the present script
-$out  = shell_exec('cd ../config; python allow-new-project.py');
+$out  = shell_exec('cd ../config; python3 allow-new-project.py');
 echo $out;
 
 

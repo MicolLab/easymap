@@ -1,29 +1,29 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import glob, gzip, csv, sys, os, copy, re
 csv.register_dialect('tab', delimiter='\t', quoting=csv.QUOTE_NONE)
 
 def usage(msg=None):
     if msg==None:
-        print 'Usage: plot.py [OPTIONS] <dir>'
-        print 'Options:'
-        print '   -H, --highlight +group1,-group2       Highlight calls shared within group1 but not present in group2'
-        print '   -i, --interactive                     Run interactively'
-        print '   -l, --min-length <num>                Filter input regions shorter than this [0]'
-        print '   -n, --min-markers <num>               Filter input regions with fewer marker than this [0]'
-        print '   -o, --outfile <file>                  Output file name [plot.png]'
-        print '   -q, --min-qual <num>                  Filter input regions with quality smaller than this [0]'
-        print '   -r, --region [^]<chr|chr:beg-end>     Plot this chromosome/region only'
-        print '   -s, --samples <file>                  List of samples to show, rename or group: "name[\\tnew_name[\\tgroup]]"'
-        print '   -h, --help                            This usage text'
-        print 'Matplotlib options:'
-        print '   +adj, --adjust <str>     Set plot adjust [bottom=0.18,left=0.07,right=0.98]'
-        print '   +dpi, --dpi <num>        Set bitmap DPI [150]'
-        print '   +sxt, --show-xticks      Show x-ticks (genomic coordinate)'
-        print '   +xlb, --xlabel <str>     Set x-label'
-        print '   +xli, --xlimit <num>     Extend x-range by this fraction [0.05]'
+        print('Usage: plot.py [OPTIONS] <dir>')
+        print('Options:')
+        print('   -H, --highlight +group1,-group2       Highlight calls shared within group1 but not present in group2')
+        print('   -i, --interactive                     Run interactively')
+        print('   -l, --min-length <num>                Filter input regions shorter than this [0]')
+        print('   -n, --min-markers <num>               Filter input regions with fewer marker than this [0]')
+        print('   -o, --outfile <file>                  Output file name [plot.png]')
+        print('   -q, --min-qual <num>                  Filter input regions with quality smaller than this [0]')
+        print('   -r, --region [^]<chr|chr:beg-end>     Plot this chromosome/region only')
+        print('   -s, --samples <file>                  List of samples to show, rename or group: "name[\\tnew_name[\\tgroup]]"')
+        print('   -h, --help                            This usage text')
+        print('Matplotlib options:')
+        print('   +adj, --adjust <str>     Set plot adjust [bottom=0.18,left=0.07,right=0.98]')
+        print('   +dpi, --dpi <num>        Set bitmap DPI [150]')
+        print('   +sxt, --show-xticks      Show x-ticks (genomic coordinate)')
+        print('   +xlb, --xlabel <str>     Set x-label')
+        print('   +xli, --xlimit <num>     Extend x-range by this fraction [0.05]')
     else:
-        print msg
+        print(msg)
     sys.exit(1)
 
 dir         = None
@@ -404,5 +404,3 @@ else:
     for file in (parse_outfile(outfile)):
         plt.savefig(file,dpi=dpi)
     plt.close()
-
-

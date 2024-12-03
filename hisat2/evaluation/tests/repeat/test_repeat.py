@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys, os, subprocess, random
 from argparse import ArgumentParser, FileType
 
@@ -52,7 +52,7 @@ def read_genome(genome_filename):
 
     genome_file.close()
 
-    print >> sys.stderr, "genome is loaded"
+    print("genome is loaded", file=sys.stderr)
     
     return chr_dic
 
@@ -62,7 +62,7 @@ def read_genome(genome_filename):
 def generate_random_seq(seq_len):
     assert seq_len > 0
     random_seq = ""
-    for i in xrange(seq_len):
+    for i in range(seq_len):
         random_seq += "ACGT"[random.randint(0, 3)]
     return random_seq
 
@@ -109,10 +109,10 @@ def test_repeat(verbose):
     ]
     
     for id, seq in seqs:
-        print ">%s" % id
-        print generate_random_seq(20)
-        print seq
-        print generate_random_seq(20)
+        print(">%s" % id)
+        print(generate_random_seq(20))
+        print(seq)
+        print(generate_random_seq(20))
 
 
 """

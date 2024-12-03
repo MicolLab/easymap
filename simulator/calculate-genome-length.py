@@ -33,4 +33,4 @@ with open(genome) as fp:
 		contig_length = len(seq)
 		genome_length += contig_length
 
-print genome_length
+print (genome_length)

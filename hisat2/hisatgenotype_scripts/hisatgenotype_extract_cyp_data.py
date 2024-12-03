@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2016, Raymon Cao <rcao5@jhu.edu> and Daehwan Kim <infphilo@gmail.com>
@@ -88,8 +88,8 @@ def download_CYP(verbose):
         # Open file to write on
         cyp_file = open("cyp_var_files/%s.var" % (cyp_gene_name), 'w')
         
-        print >> sys.stderr, cyp_url, cyp_gene_name
-        print >> cyp_file, cyp_url, cyp_gene_name
+        print(cyp_url, cyp_gene_name, file=sys.stderr)
+        print(cyp_url, cyp_gene_name, file=cyp_file)
 
         cyp_output = get_html(cyp_url)
         if cyp_output == "":
@@ -155,11 +155,11 @@ def download_CYP(verbose):
                 try:
                     assert len(varInfo) == 1
                 except:
-                    varInfo = filter(lambda a: a != 'None', varInfo)
+                    varInfo = [a for a in varInfo if a != 'None']
                 
         
-            if isinstance(alleleName, basestring):
-                print >> cyp_file, (str(alleleName) + "\t" + ','.join(varInfo))
+            if isinstance(alleleName, str):
+                print((str(alleleName) + "\t" + ','.join(varInfo)), file=cyp_file)
             
         cyp_file.close()
 
@@ -169,7 +169,7 @@ Make MSF files from variants
 """
 
 def checkNTloc(fasta_fileName,var_fileName,gene_name):
-    print "\nGene: %s" % gene_name
+    print("\nGene: %s" % gene_name)
     seq = ""
     for line in open(fasta_fileName,'r'):
         if line[0] == '>':
@@ -180,11 +180,11 @@ def checkNTloc(fasta_fileName,var_fileName,gene_name):
     cyp_var_dict = makeVarDict(cyp_var_file)
     cyp_var_file.close()
 
-    print "len:", len(seq)
+    print("len:", len(seq))
     varsPos = set()
     varsNeg = set()
 
-    for varList in cyp_var_dict.values():
+    for varList in list(cyp_var_dict.values()):
         for var in varList:
             if ">" in var: # is SNP
                 posNt = int(var[:-3])
@@ -219,7 +219,7 @@ def checkNTloc(fasta_fileName,var_fileName,gene_name):
                     try:
                         assert posNt[1] - posNt[0] + 1 == len(ntDel)
                     except AssertionError:
-                        print "Incorrect deletion format: %s , skipping variation" % (var)
+                        print("Incorrect deletion format: %s , skipping variation" % (var))
                         '''sys.exit(1)'''
                         continue
                     ntDelList = list(ntDel)
@@ -251,12 +251,12 @@ def checkNTloc(fasta_fileName,var_fileName,gene_name):
                 align_score += 1
 
         scorePos[i] = align_score
-    oSetPos = max(scorePos.iteritems(), key=operator.itemgetter(1))[0]
-    print "Positive postitions offset: %d" % oSetPos
-    print "Score: %d out of %d\n" % (scorePos[oSetPos], len(varsPos))
+    oSetPos = max(iter(scorePos.items()), key=operator.itemgetter(1))[0]
+    print("Positive postitions offset: %d" % oSetPos)
+    print("Score: %d out of %d\n" % (scorePos[oSetPos], len(varsPos)))
     
 
-    print "Checking negative position offset: %d" % (oSetPos + 1)
+    print("Checking negative position offset: %d" % (oSetPos + 1))
     align_score = 0
     oSetNeg = oSetPos + 1
     for var in varsNeg:
@@ -270,7 +270,7 @@ def checkNTloc(fasta_fileName,var_fileName,gene_name):
         
         if seq[pos + oSetNeg] == base:
             align_score += 1
-    print "Score: %d out of %d\n\n" % (align_score, len(varsNeg))
+    print("Score: %d out of %d\n\n" % (align_score, len(varsNeg)))
 
     if len(varsNeg) == 0 and len(varsPos) != 0:
         return oSetPos, oSetNeg, float(scorePos[oSetPos])/float(len(varsPos)), 1.0, float(scorePos[oSetPos] + align_score)/float(len(varsPos) + len(varsNeg))
@@ -344,7 +344,7 @@ def makeVarDict(fname):
             assert not alleleName in alleleVarDict
             alleleVarDict[alleleName] = set(varList)
         except:
-            print >> sys.stdout, ("Warning, %s allele is already represented" % alleleName)
+            print(("Warning, %s allele is already represented" % alleleName), file=sys.stdout)
             alleleVarDict[alleleName] = alleleVarDict[alleleName] | set(varList)
 
     return alleleVarDict
@@ -386,7 +386,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
         if len(blast_allele_var) > 0:
             cyp_var_dict[gene_name.upper() + '*REFGRCH38P7'] = set(blast_allele_var)
     except IOError:
-        print('\t%s blast file was skipped.' % gene_name)
+        print(('\t%s blast file was skipped.' % gene_name))
 
     cyp_faFile = open("cyp_fasta/%s.fasta" % gene_name,'r')
     cyp_seq = extractSeq(cyp_faFile)
@@ -398,7 +398,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
 
     # Building backbone structure (augment length with insertions)
     longestIns = {} # { key = position : value = length }
-    for allele,varList in cyp_var_dict.items():
+    for allele,varList in list(cyp_var_dict.items()):
         for var in varList:
             if not "ins" in var:
                 continue
@@ -411,7 +411,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
             try:
                 assert correctFormat
             except:
-                print >> sys.stdout, "\tIncorrect format for insertion: variation %s on allele %s" % (var, allele)
+                print("\tIncorrect format for insertion: variation %s on allele %s" % (var, allele), file=sys.stdout)
                 continue
 
             # convert to position in string
@@ -450,7 +450,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
     map_cyp = create_map(preBackbone_seq) # { Index of bp in original seq : Actual index in string }
     
 
-    for allele,varList in cyp_var_dict.items():
+    for allele,varList in list(cyp_var_dict.items()):
         for var in varList:
             isSnp = False
             isDel = False
@@ -481,15 +481,15 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
                         pos = pos + oSetNeg
 
                 if pos < 0 or pos > len(cyp_seq) - 1:
-                    print >> sys.stdout, "\tWarning: position %d out of bounds" % (dbPos)
-                    print >> sys.stdout, "\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele)
+                    print("\tWarning: position %d out of bounds" % (dbPos), file=sys.stdout)
+                    print("\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                     continue
                     
                 try:
                     assert(preBackbone_seq[map_cyp[pos]] == ntChange[0]) # nt at pos in seq must match database
                 except:
-                    print >> sys.stdout, "\tWarning: position %d in sequence contains %s, but expected %s from database" % (dbPos, preBackbone_seq[map_cyp[pos]], ntChange[0])
-                    print >> sys.stdout, "\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele)
+                    print("\tWarning: position %d in sequence contains %s, but expected %s from database" % (dbPos, preBackbone_seq[map_cyp[pos]], ntChange[0]), file=sys.stdout)
+                    print("\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                     continue
                 
                 # Adding to msf table
@@ -519,8 +519,8 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
                 skipDel = False
                 for i in range(len(pos)):
                     if pos[i] < 0 or pos[i] > len(cyp_seq) - 1:
-                        print >> sys.stdout, "\tWarning: position %d out of bounds" % (dbPos[i])
-                        print >> sys.stdout, "\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele)
+                        print("\tWarning: position %d out of bounds" % (dbPos[i]), file=sys.stdout)
+                        print("\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                         skipDel = True
 
                 if skipDel:
@@ -530,15 +530,15 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
                 try:
                     assert pos[1] - pos[0] + 1 == len(ntDel)
                 except:
-                    print >> sys.stdout, "\tIncorrect deletion data with %s on allele %s. Skipping variation." % (var, allele)
+                    print("\tIncorrect deletion data with %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                     continue
                             
                 try:
                     assert preBackbone_seq[ map_cyp[pos[0]] : map_cyp[pos[1]] + 1 ] == ntDel
                 except:
-                    print >> sys.stdout, "\tWarning, positions %d to %d in sequence contains %s, but expected %s from database" % \
-                          (dbPos[0], dbPos[1], preBackbone_seq[ map_cyp[pos[0]] : map_cyp[pos[1]] + 1 ], ntDel)
-                    print >> sys.stdout, "\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele)
+                    print("\tWarning, positions %d to %d in sequence contains %s, but expected %s from database" % \
+                          (dbPos[0], dbPos[1], preBackbone_seq[ map_cyp[pos[0]] : map_cyp[pos[1]] + 1 ], ntDel), file=sys.stdout)
+                    print("\t\tError occured on variation %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                     continue
 
 
@@ -559,7 +559,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
                 try:
                     assert pos[1] - pos[0] == 1
                 except AssertionError:
-                    print >> sys.stdout, "\tIncorrect insertion data with %s on allele %s. Skipping variation." % (var, allele)
+                    print("\tIncorrect insertion data with %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                     continue 
                 ntIns = var.split('ins')[1]
                 for nt in ntIns:
@@ -575,8 +575,8 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
                 skipIns = False
                 for i in range(len(pos)):
                     if pos[i] < 0 or pos[i] > len(cyp_seq) - 1:
-                        print >> sys.stdout, "Warning: position %d out of bounds" % (dbPos[i])
-                        print >> sys.stdout, "\tError occured on variation %s on allele %s. Skipping variation." % (var, allele)
+                        print("Warning: position %d out of bounds" % (dbPos[i]), file=sys.stdout)
+                        print("\tError occured on variation %s on allele %s. Skipping variation." % (var, allele), file=sys.stdout)
                         skipIns = True
 
                 if skipIns:
@@ -597,7 +597,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
 
     # Sanity checking
     seq_len = 0
-    for allele, msf_seq in msfTable.items():
+    for allele, msf_seq in list(msfTable.items()):
         if seq_len == 0:
             seq_len = len(msf_seq)
         else:
@@ -607,7 +607,7 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
     # Follow MSF style of IMGT/HLA database
     msfFile = open('cyp_msf/%s_gen.msf' % gene_name[3:].upper(),'w')
     for i in range(0, seq_len, 50):
-        for allele, msf_seq in msfTable.items():
+        for allele, msf_seq in list(msfTable.items()):
             output = "%12s" % allele[3:].upper()
             for j in range(i, i+50, 10):
                 if j >= seq_len:
@@ -617,8 +617,8 @@ def makeMSF(gene_name, oSetPos, oSetNeg):
                 else:
                     output += " "
                 output += msf_seq[j:j+10]
-            print >> msfFile, output
-        print >> msfFile
+            print(output, file=msfFile)
+        print(file=msfFile)
 
     msfFile.close()
 
@@ -636,7 +636,7 @@ def build_msf_files():
     for gene_name in gene_names:
         oSetPos, oSetNeg, oSetScorePos, oSetScoreNeg, tot_score = checkNTloc("cyp_fasta/%s.fasta" % gene_name,"cyp_var_files/%s.var" % gene_name,gene_name)
         if not (tot_score >= 0.95):
-            print "\tLess than 95% match, skipping gene."
+            print("\tLess than 95% match, skipping gene.")
             continue
         
         makeMSF(gene_name, oSetPos, oSetNeg)
@@ -750,7 +750,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
         msf_dict = readMSF(msf_file) # { Allele name : MSF sequence }
         msf_file.close()
     except IOError:
-        print("\t%s msf file was skipped.\n" % (gene_name))
+        print(("\t%s msf file was skipped.\n" % (gene_name)))
         return
 
     var_file = open(var_fname,'r')
@@ -762,7 +762,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
         if len(blast_allele_var) > 0:
             var_dict[gene_name.upper() + '*REFGRCH38P7'] = set(blast_allele_var)
     except IOError:
-        print('\t%s blast file was skipped.' % gene_name)
+        print(('\t%s blast file was skipped.' % gene_name))
     
     fa_file = open(fasta_filename,'r')
     oriSeq = extractSeq(fa_file)
@@ -771,7 +771,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
 
     # Find reference allele
     ref_allele = ''
-    for allele_name in var_dict.keys():
+    for allele_name in list(var_dict.keys()):
         if len(var_dict[allele_name]) == 1 and list(var_dict[allele_name])[0] == "None":
             assert ref_allele == ''
             ref_allele = allele_name
@@ -783,25 +783,25 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
 
     try:
         assert msf_dict[ref_allele].replace('.','') == oriSeq
-        print("Sequences match for reference allele %s" % ref_allele)
+        print(("Sequences match for reference allele %s" % ref_allele))
     except AssertionError:
-        print("Warning: sequences do not match for reference allele %s" % ref_allele)
+        print(("Warning: sequences do not match for reference allele %s" % ref_allele))
         sys.exit(1)
 
 
     # Check all alleles are included
     try:
-        assert set([k.upper() for k in msf_dict.keys()]).issubset(set([k.upper() for k in var_dict.keys()]))
+        assert set([k.upper() for k in list(msf_dict.keys())]).issubset(set([k.upper() for k in list(var_dict.keys())]))
     except AssertionError:
         print("Extra alleles in MSF!\n")
-        print(sorted(msf_dict.keys()))
+        print((sorted(msf_dict.keys())))
         print("\n\n")
-        print(sorted(var_dict.keys()))
+        print((sorted(var_dict.keys())))
         sys.exit(1)
 
 
     # Convert from database positions to sequence positions (using offset)
-    for allele, var_list in var_dict.items():
+    for allele, var_list in list(var_dict.items()):
         oSet_var_list = []
         for var in var_list:
             if '>' in var: # snp
@@ -818,7 +818,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
                 if pos < 0 or pos > len(oriSeq) - 1: # out of bounds
                     continue
                 if oriSeq[pos] != ntSnp[0]: # mismatch
-                    print('\tMismatch on variation %s' % var)
+                    print(('\tMismatch on variation %s' % var))
                     continue
 
                 oSet_var = str(pos) + ntSnp[0] + '>' + ntSnp[1]
@@ -844,7 +844,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
                         if pos[i] < 0 or pos[i] > len(oriSeq) - 1: # out of bounds
                             skipDel = True
                 if (oriSeq[ pos[0] : pos[1] + 1 ] != ntDel): # mismatch
-                    print('\tMismatch on variation %s' % var)
+                    print(('\tMismatch on variation %s' % var))
                     continue
 
                 if skipDel:
@@ -869,7 +869,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
                 try:
                     assert pos[1] - pos[0] == 1
                 except AssertionError:
-                    print('\tIncorrect insertion format on variation %s' % var)
+                    print(('\tIncorrect insertion format on variation %s' % var))
                     continue
                 ntIns = var.split('ins')[1]
                 for nt in ntIns:
@@ -901,7 +901,7 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
 
     # Check variants created from MSF file against variants list
     num_correct_alleles = 0
-    for allele, msf_seq in msf_dict.items():
+    for allele, msf_seq in list(msf_dict.items()):
         if allele == ref_allele:
             num_correct_alleles += 1
             continue
@@ -914,12 +914,12 @@ def checkMSFfile(gene_name, msf_fname, var_fname, fasta_filename):
         except AssertionError:
             incorrect_msf_entries.append(allele)
             print('\n')
-            print('\t\tVar File:\t' + str(var_dict[allele]))
-            print('\t\tMSF File:\t' + str(set(msf_var_list)))
-            print('\t\tDifference:\t' + str(var_dict[allele] - set(msf_var_list)) + '\n')
+            print(('\t\tVar File:\t' + str(var_dict[allele])))
+            print(('\t\tMSF File:\t' + str(set(msf_var_list))))
+            print(('\t\tDifference:\t' + str(var_dict[allele] - set(msf_var_list)) + '\n'))
             '''sys.exit(1)'''
 
-    print("\t%d out of %d alleles have correct msf sequences\n" % (num_correct_alleles, len(msf_dict)))
+    print(("\t%d out of %d alleles have correct msf sequences\n" % (num_correct_alleles, len(msf_dict))))
 
 def check_msf_files():
     print("\nChecking MSF files:")
@@ -927,7 +927,7 @@ def check_msf_files():
     for gene_name in gene_names:
         checkMSFfile(gene_name, 'cyp_msf/%s_gen.msf' % gene_name[3:].upper(), 'cyp_var_files/%s.var' % gene_name, 'cyp_fasta/%s.fasta' % gene_name)
 
-    print('\n\n%d incorrect msf entries on alleles %s\n' % (len(incorrect_msf_entries), str(incorrect_msf_entries)))
+    print(('\n\n%d incorrect msf entries on alleles %s\n' % (len(incorrect_msf_entries), str(incorrect_msf_entries))))
 
 
 """
@@ -940,19 +940,19 @@ def writeGenFasta(gene_name, msf_fname, line_length):
         msf_seq_dict = readMSF(msf_file)
         msf_file.close()
     except IOError:
-        print("\t%s msf file was skipped." % (gene_name))
+        print(("\t%s msf file was skipped." % (gene_name)))
         return
 
     gen_fasta_file = open('gen_fasta/%s_gen.fasta' % gene_name[3:].upper(), 'w')
     
-    for allele, seq in msf_seq_dict.items():
+    for allele, seq in list(msf_seq_dict.items()):
         seq = seq.replace('.','')
-        print >> gen_fasta_file, ('>' + allele[3:].upper() + ' ' + str(len(seq)) + ' bp')
+        print(('>' + allele[3:].upper() + ' ' + str(len(seq)) + ' bp'), file=gen_fasta_file)
         seq_lines = [seq[i:i+line_length] for i in range(0, len(seq), line_length)]
-        print >> gen_fasta_file, ('\n'.join(seq_lines))
+        print(('\n'.join(seq_lines)), file=gen_fasta_file)
 
     gen_fasta_file.close()
-    print('%s_gen.fasta completed' % gene_name)
+    print(('%s_gen.fasta completed' % gene_name))
 
 def build_gen_fasta_files():
     os.system('mkdir gen_fasta')

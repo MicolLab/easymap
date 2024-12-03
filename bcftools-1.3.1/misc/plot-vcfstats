@@ -277,7 +277,7 @@ sub plot
     my ($opts) = @_;
     if ( !exists($$opts{plt_fh}) ) { return; }
     close($$opts{plt_fh}) or error("close $$opts{plt_fh}");
-    my $cmd = "python $$opts{plt_file}";
+    my $cmd = "python3 $$opts{plt_file}";
     print STDERR "Plotting graphs: $cmd\n" unless !$$opts{verbose};
     system($cmd);
     if ( $? ) { error("The command exited with non-zero status $?:\n\t$cmd\n\n"); }
@@ -671,7 +671,7 @@ sub init_plots
         #   $$opts{args}
         #
         # Edit as necessary and recreate the plots by running
-        #   python $$opts{plt_file}
+        #   python3 $$opts{plt_file}
         #
         $titles
 

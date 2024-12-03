@@ -1,16 +1,15 @@
-
 import subprocess
 import os
 
 # Get amount of data currently in user_data directory
 proc = subprocess.Popen("du -s ../user_data", shell=True, stdout=subprocess.PIPE)
-folder_size_output = proc.stdout.read()
-user_data_size_gb = float(float(folder_size_output.split("	")[0]) / 1048576)
+folder_size_output = proc.stdout.read().decode('utf-8')
+user_data_size_gb = float(float(folder_size_output.split("\t")[0]) / 1048576)
 
 # Get amount of data currently in user_projects directory
 proc = subprocess.Popen("du -s ../user_projects", shell=True, stdout=subprocess.PIPE)
-folder_size_output = proc.stdout.read()
-user_projects_size_gb = float(float(folder_size_output.split("	")[0]) / 1048576)
+folder_size_output = proc.stdout.read().decode('utf-8')
+user_projects_size_gb = float(float(folder_size_output.split("\t")[0]) / 1048576)
 
 user_files_size_gb = user_data_size_gb + user_projects_size_gb
 
@@ -61,4 +60,4 @@ try:
 except:
 	percentage_running = "The maximum number of simultaneous jobs allowed is not defined. Please define it in the file config/config."
 
-print str(percentage_size) + "," + str(percentage_running) + "," + str(size_limit) + "," + str(simultaneous_limit)
+print(str(percentage_size) + "," + str(percentage_running) + "," + str(size_limit) + "," + str(simultaneous_limit))

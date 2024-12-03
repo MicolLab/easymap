@@ -253,7 +253,7 @@ static void init_data(args_t *args)
     FILE *fp = open_file(&fname,"w","%s/dist.py", args->output_dir);
 //-------- matplotlib script --------------
     fprintf(fp,
-        "#!/usr/bin/env python\n"
+        "#!/usr/bin/env python3\n"
         "#\n"
         "import matplotlib as mpl\n"
         "mpl.use('Agg')\n"

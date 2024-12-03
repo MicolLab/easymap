@@ -1,10 +1,11 @@
-#!./src/Python-2.7.18/.localpython/bin/python2
+#!./src/Python-3.12.3/.localpython/bin/python3
+
 import cgi, cgitb, os, subprocess
 cgitb.enable() # For debugging only
 
 # Set Content-type header so XMLHttpRequest in JS can understand the response
-print "Content-Type: text/html"
-print ""
+print("Content-Type: text/html")
+print("")
 
 arguments = cgi.FieldStorage()
 projectName = str(arguments['p'].value).strip()

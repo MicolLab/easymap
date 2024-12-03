@@ -398,11 +398,11 @@ bowtie2.bat:
 
 bowtie2-build.bat:
 	echo "@echo off" > bowtie2-build.bat
-	echo "python %~dp0/bowtie2-build %*" >> bowtie2-build.bat
+	echo "python3 %~dp0/bowtie2-build %*" >> bowtie2-build.bat
 
 bowtie2-inspect.bat:
 	echo "@echo off" > bowtie2-inspect.bat
-	echo "python %~dp0/bowtie2-inspect %*" >> bowtie2-inspect.bat
+	echo "python3 %~dp0/bowtie2-inspect %*" >> bowtie2-inspect.bat
 
 .PHONY: bowtie2-src
 bowtie2-src: $(SRC_PKG_LIST)

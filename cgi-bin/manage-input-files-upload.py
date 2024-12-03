@@ -1,12 +1,12 @@
-#!src/Python-2.7.18/.localpython/bin/python2
+#!src/Python-3.12.3/.localpython/bin/python3
 
 import cgi, os, shutil, subprocess
 import cgitb; cgitb.enable()
 
 
-print 'Content-Type: text/html'
-print ''
-print '{"jsonrpc" : "2.0", "result" : null, "id" : "id"}'
+print('Content-Type: text/html')
+print('')
+print('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}')
 
 '''
 try: # Windows needs stdio set for binary mode.

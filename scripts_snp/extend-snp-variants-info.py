@@ -1,4 +1,3 @@
-
 '''
 
 This script was written to add more info to the list of variants that is presented to the user
@@ -91,7 +90,7 @@ ins mode {
 
 
 import argparse
-from string import maketrans
+from str import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
@@ -160,7 +159,7 @@ for line1 in in1_array:
 	# something wrong is happening (every variant should always be in both input files).
 	# In this event, stop the workflow by sending 'error' to the workflow
 	if quality == '-' or ref_count == '-' or alt_count == '-' or allele_frequency == '-':
-			print 'error'
+			print('error')
 			quit()
 	
 	# Calculate the distance from the variant position to the selected position
@@ -236,8 +235,4 @@ for line in final_lines:
 
 # If the program reaches the end, emit 'success' to let the workflow know that the qual, counts and af
 # info was found fo all variants 
-print 'success'
-
-
-
-
+print('success')

@@ -1,4 +1,3 @@
-
 # Multiple fasta files can be provided (one per contig). The program asks for the folder that
 # contains the fasta inputs. The same happens with fastq files (f and r / sample 1 and sample2)
 #
@@ -51,7 +50,7 @@ if gnm_basename != None:
 					break	
 			gnm_contents.close()
 	
-	print gnm_result
+	print(gnm_result)
 	
 
 # If ins argument provided, check fasta file
@@ -70,7 +69,7 @@ if ins_source != None:
 				break	
 		ins_contents.close()
 	
-	print ins_result
+	print(ins_result)
 
 
 # If fq argument provided, check fastq file(s)
@@ -92,7 +91,7 @@ if fq_source != None:
 				break
 		fq_contents.close()
 	
-	print fq_result
+	print(fq_result)
 	
 	
 # If gff argument provided, check gff3 file
@@ -123,7 +122,7 @@ if gff_source != None:
 					break
 				i += 1
 		gff_contents.close()
-	print gff_result
+	print(gff_result)
 
 
 # The format of the annotation file is flexible, so this block is nowadays not called by process-input.sh
@@ -147,11 +146,11 @@ if ann_source != None:
 				if len(fields) >= 2:
 					if not fields[1].strip():
 						ann_result = 1
-						print line
+						print(line)
 	
 		ann_contents.close()
 
-	print ann_result
+	print(ann_result)
 	
 	
 # If fa_match and gff_match arguments provided, check contigs match
@@ -200,7 +199,7 @@ if fa_match != None and gff_match != None:
 				if gff_contig not in fa_contigs:
 					match_result = 3
 	
-	print match_result
+	print(match_result)
 	
 	# 0: pass
 	# 1: fa, gff, or both files are empty

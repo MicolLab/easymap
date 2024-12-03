@@ -60,7 +60,7 @@ void py_plot(char *script)
 {
     mkdir_p(script);
     int len = strlen(script);
-    char *cmd = !strcmp(".py",script+len-3) ? msprintf("python %s", script) : msprintf("python %s.py", script);
+    char *cmd = !strcmp(".py",script+len-3) ? msprintf("python3 %s", script) : msprintf("python3 %s.py", script);
     int ret = system(cmd);
     if ( ret ) fprintf(stderr, "The command returned non-zero status %d: %s\n", ret, cmd);
     free(cmd);

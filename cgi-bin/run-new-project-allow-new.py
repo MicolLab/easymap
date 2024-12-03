@@ -1,4 +1,4 @@
-#!src/Python-2.7.18/.localpython/bin/python2
+#!src/Python-3.12.3/.localpython/bin/python3
 
 '''
 This file is mostly the same as config/allow-new-project.py. Several issues prevented
@@ -9,7 +9,7 @@ modified it as necessary...
 import cgi, cgitb, subprocess, os
 cgitb.enable()
 
-print "Content-type:text/html\r\n\r\n"
+print("Content-type:text/html\r\n\r\n")
 
 # Get amount of data currently in user_data directory
 proc = subprocess.Popen("du -s user_data", shell=True, stdout=subprocess.PIPE)
@@ -70,4 +70,4 @@ try:
 except:
 	percentage_running = "The maximum number of simultaneous jobs allowed is not defined. Please define it in the file config/config."
 
-print str(percentage_size) + "," + str(percentage_running) + "," + str(size_limit) + "," + str(simultaneous_limit)
+print(str(percentage_size) + "," + str(percentage_running) + "," + str(size_limit) + "," + str(simultaneous_limit))

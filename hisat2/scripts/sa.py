@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 sa.py
@@ -15,7 +15,7 @@ import struct
 def loadBowtieSa(fh):
 	""" Load a .sa file from handle into an array of ints """
 	nsa = struct.unpack('I', fh.read(4))[0]
-	return [ struct.unpack('I', fh.read(4))[0] for i in xrange(0, nsa) ]
+	return [ struct.unpack('I', fh.read(4))[0] for i in range(0, nsa) ]
 
 def loadBowtieSaFilename(fn):
 	""" Load a .sa file from filename into an array of ints """
@@ -58,7 +58,7 @@ if __name__ == "__main__":
 		# Suffix array is in sas; note that $ is considered greater than all
 		# other characters
 		if ref is not None:
-			for i in xrange(1, len(sas)):
+			for i in range(1, len(sas)):
 				sa1, sa2 = sas[i-1], sas[i]
 				assert sa1 != sa2
 				# Sanity check that suffixes are really in order

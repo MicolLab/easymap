@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #
 # Copyright 2018, Chanhee Park <parkchanhee@gmail.com> and Daehwan Kim <infphilo@gmail.com>
@@ -19,7 +19,7 @@
 # along with HISAT 2.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 module1 = Extension('ht2py',
 #                    define_macros = [('DEBUG', '1')],

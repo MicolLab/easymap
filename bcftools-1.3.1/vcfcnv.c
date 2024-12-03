@@ -319,7 +319,7 @@ static void py_plot_cnv(char *script, float th)
 {
     if ( th>100 ) return;   // create no plots
 
-    char *cmd = msprintf("python %s -p %f", script, th);
+    char *cmd = msprintf("python3 %s -p %f", script, th);
     int ret = system(cmd);
     if ( ret) fprintf(stderr, "The command returned non-zero status %d: %s\n", ret, cmd);
     free(cmd);
