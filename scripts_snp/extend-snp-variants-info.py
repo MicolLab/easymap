@@ -90,7 +90,6 @@ ins mode {
 
 
 import argparse
-from str import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()

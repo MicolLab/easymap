@@ -115,6 +115,10 @@ make
 make install
 cd ..
 
+# Ensure pip is up to date
+echo "ACTUALIZANDO pip A LA ÚLTIMA VERSION"
+easymap-env/bin/python3 -m pip install --upgrade pip
+
 # Get virtualenv-20.28.0
 echo "DESCARGANDO VIRTUALENV"
 wget https://files.pythonhosted.org/packages/bf/75/53316a5a8050069228a2f6d11f32046cfa94fbb6cc3f08703f59b873de2e/virtualenv-20.28.0.tar.gz
@@ -128,10 +132,6 @@ echo "INSTALANDO VIRTUALENV"
 # Create virtual environment "easymap-env"
 echo "CREANDO EL ENTORNO VIRTUAL"
 ../Python-3.12.3/.localpython/bin/python3 -m virtualenv easymap-env -p ../Python-3.12.3/.localpython/bin/python3
-
-# Ensure pip is up to date
-echo "ACTUALIZANDO pip A LA ÚLTIMA VERSION"
-easymap-env/bin/python3 -m pip install --upgrade pip
 
 # Ensure pip is installed in the virtual environment
 if ! [ -x "$(command -v easymap-env/bin/pip)" ]; then
@@ -169,9 +169,9 @@ run_result=`./easymap -n setup -w snp -sim -r check -g check.gff -ed ref_bc_parm
 echo "COMANDO RUN_RESULT BIEN"
 
 # Cleanup
-rm user_data/check.gff
-m user_data/check.1.fa
-rm -rf user_projects/*
+#rm user_data/check.gff
+#rm user_data/check.1.fa
+#rm -rf user_projects/*
 
 if [ "$run_result" == "Easymap analysis properly completed." ]; then
 	echo "LOS ANALISIS DE EASYMAP SE HAN COMPLETADO CORRECTAMENTE"

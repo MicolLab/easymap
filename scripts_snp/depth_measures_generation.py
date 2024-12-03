@@ -34,6 +34,6 @@ subprocess.call(['./samtools1/samtools', 'index', '-b', bam, bam[:-3]+'bai'])
 for contig in dic:
 	if dic[contig] > 200000:
 		depth_output = subprocess.check_output(['./samtools1/samtools', 'depth', '-a', '-r',contig[1:]+":100000-200000", bam])
-		t.write(depth_output)
+		t.write(depth_output.decode('utf-8'))
 	
 t.close()
