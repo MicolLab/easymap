@@ -161,7 +161,7 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 		nohup ./src/Python-3.12.3/.localpython/bin/python3 -m http.server --cgi $port &
 		
 		# Modify/create the etc/crontab file to always start easymap server at bootup
-		echo "@reboot   root    cd $PWD; ./src/Python-3.12.3/.localpython/bin/python3 -m CGIHTTPServer $port" >> /etc/crontab
+		echo "@reboot   root    cd $PWD; ./src/Python-3.12.3/.localpython/bin/python3 -m http.server --cgi $port" >> /etc/crontab
 
 		# Save port number to /config/port for future reference for the user
 		echo $port > config/port
