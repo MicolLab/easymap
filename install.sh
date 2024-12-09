@@ -22,10 +22,10 @@
 # Install necessary dependencies for Python
 echo "Installing necessary dependencies for Python"
 sudo apt-get update
-sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
-                        libreadline-dev libsqlite3-dev wget curl llvm \
-                        libncurses5-dev libncursesw5-dev xz-utils tk-dev \
-                        liblzma-dev python3-openssl git python3-dev
+sudo apt-get install -y build-essential zlib1g-dev libbz2-dev git wget tar \
+                        zip liblzma-dev libncurses5-dev libncursesw5-dev \
+                        libssl-dev make python3-openssl python3-dev libreadline-dev \
+                        libsqlite3-dev curl llvm xz-utils tk-dev
 
 # Deal with argument provided by user
 if ! [ $1 ]; then
@@ -41,7 +41,6 @@ fi
 if [ $1 == server ]; then
 	if ! [ $2 ]; then
 		port=8100
-		echo "USANDO EL PUERTO POR DEFECTO 8100"
 	elif [ "$2" -ge 8100 ] && [ "$2" -le 8200 ]; then
 		port=$2
 		echo "Using port: $port"
@@ -119,11 +118,8 @@ cd virtualenv-20.28.0/
 # Create virtual environment "easymap-env"
 ../Python-3.12.3/.localpython/bin/python3 -m virtualenv easymap-env -p ../Python-3.12.3/.localpython/bin/python3
 
-# Ensure pip is installed in the virtual environment
-if ! [ -x "$(command -v easymap-env/bin/pip)" ]; then
-    echo "Error: pip no está instalado en el entorno virtual, intentando instalar pip..."
-    easymap-env/bin/python3 -m ensurepip --upgrade
-fi
+# Ensure pip is installed and updated inside the virtual environment
+easymap-env/bin/python3 -m pip install --upgrade pip
 
 # Install Pillow with pip
 [ -d cache ] || mkdir cache
@@ -143,7 +139,6 @@ sudo chmod -R 777 .
 
 ################################################################################
 # Check if Easymap functions properly by running a small project: 
-# Verify and copy files if they exist
 cp fonts/check.1.fa user_data/
 cp fonts/check.gff user_data/
 run_result=`./easymap -n setup -w snp -sim -r check -g check.gff -ed ref_bc_parmut 2>&1`
@@ -166,8 +161,7 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 		# Save port number to /config/port for future reference for the user
 		echo $port > config/port
 
-		# Print the link to the user
-		echo "Easymap server is now running at: http://localhost:$port"
+		
 	fi
 
 	echo " "
@@ -181,6 +175,9 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 	echo "###################################################################################"
 	echo " "
 	echo " "
+
+	# Print the link to the user
+	echo "Easymap server is now running at: http://localhost:$port"
 
 else
 
