@@ -104,9 +104,6 @@ make
 make install
 cd ..
 
-# Ensure pip is up to date
-../Python-3.12.3/.localpython/bin/python3 -m pip install --upgrade pip
-
 # Get virtualenv-20.28.0
 wget https://files.pythonhosted.org/packages/bf/75/53316a5a8050069228a2f6d11f32046cfa94fbb6cc3f08703f59b873de2e/virtualenv-20.28.0.tar.gz
 tar -zxvf virtualenv-20.28.0.tar.gz
@@ -114,6 +111,9 @@ tar -zxvf virtualenv-20.28.0.tar.gz
 # Install virtualenv-20.28.0
 cd virtualenv-20.28.0/
 ../Python-3.12.3/.localpython/bin/python3 -m pip install virtualenv
+
+# Ensure pip is up to date
+../Python-3.12.3/.localpython/bin/python3 -m pip install --upgrade pip
 
 # Create virtual environment "easymap-env"
 ../Python-3.12.3/.localpython/bin/python3 -m virtualenv easymap-env -p ../Python-3.12.3/.localpython/bin/python3
