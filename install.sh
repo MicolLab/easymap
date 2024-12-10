@@ -161,7 +161,8 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 		# Save port number to /config/port for future reference for the user
 		echo $port > config/port
 
-		
+		# Print the link to the user
+		echo "Easymap server is now running at: http://localhost:$port"
 	fi
 
 	echo " "
@@ -175,10 +176,6 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 	echo "###################################################################################"
 	echo " "
 	echo " "
-
-	# Print the link to the user
-	echo "Easymap server is now running at: http://localhost:$port"
-
 else
 
 	echo " "
