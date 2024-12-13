@@ -62,6 +62,6 @@ if 0<linesum<100:
 			nts()
 			lencheck()
 
-print error
+print (error)
 f1.close()
 

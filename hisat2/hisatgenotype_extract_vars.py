@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2015, Daehwan Kim <infphilo@gmail.com>
@@ -163,8 +163,8 @@ def leftshift_deletions(backbone_seq, seq, debug = False):
             break
 
         if debug:
-            print >> sys.stderr, bp_i, bp_j, backbone_seq[bp_i-10:bp_i], backbone_seq[bp_i:bp_j], backbone_seq[bp_j:bp_j+10]
-            print >> sys.stderr, bp_i, bp_j, ''.join(seq[bp_i-10:bp_i]), ''.join(seq[bp_i:bp_j]), ''.join(seq[bp_j:bp_j+10])
+            print(bp_i, bp_j, backbone_seq[bp_i-10:bp_i], backbone_seq[bp_i:bp_j], backbone_seq[bp_j:bp_j+10], file=sys.stderr)
+            print(bp_i, bp_j, ''.join(seq[bp_i-10:bp_i]), ''.join(seq[bp_i:bp_j]), ''.join(seq[bp_j:bp_j+10]), file=sys.stderr)
         prev_i, prev_j = bp_i, bp_j
 
         while bp_i > 0 and seq[bp_i-1] in "ACGT" and backbone_seq[bp_j-1] in "ACGT":
@@ -182,7 +182,7 @@ def leftshift_deletions(backbone_seq, seq, debug = False):
 
         # DK - debugging purposes
         if debug:
-            print prev_i, prev_j, ''.join(seq[prev_i-10:prev_i]), ''.join(seq[prev_i:prev_j]), ''.join(seq[prev_j:prev_j+10])
+            print(prev_i, prev_j, ''.join(seq[prev_i-10:prev_i]), ''.join(seq[prev_i:prev_j]), ''.join(seq[prev_j:prev_j+10]))
 
     return ''.join(seq)
 
@@ -253,7 +253,7 @@ def extract_vars(base_fname,
                                       stdout=subprocess.PIPE,
                                       stderr=open("/dev/null", 'w'))
         allele_id = ""
-        best_chr, best_left, best_right, best_AS, best_strand = "", -1, -1, -sys.maxint, ''
+        best_chr, best_left, best_right, best_AS, best_strand = "", -1, -1, -sys.maxsize, ''
         for line in align_proc.stdout:
             if line.startswith('@'):
                 continue
@@ -304,8 +304,8 @@ def extract_vars(base_fname,
         assert allele_name != "" and strand != ''
         genes[gene] = allele_name
         gene_strand[gene] = strand
-        print >> sys.stderr, "%s-%s's reference allele is %s on '%s' strand of chromosome %s" % \
-            (base_fname.upper(), gene, allele_name, strand, chr)
+        print("%s-%s's reference allele is %s on '%s' strand of chromosome %s" % \
+            (base_fname.upper(), gene, allele_name, strand, chr), file=sys.stderr)
 
         assert chr != "" and left >= 0 and right > left
         if ext_seq_len > 0:
@@ -381,8 +381,8 @@ def extract_vars(base_fname,
                 else:
                     gene_exon_counts[gene][num] += 1
                 
-        for gene, exon_counts in gene_exon_counts.items():
-            print >> sys.stderr, "%s exon counts:" % gene, exon_counts
+        for gene, exon_counts in list(gene_exon_counts.items()):
+            print("%s exon counts:" % gene, exon_counts, file=sys.stderr)
 
     tmp_locus_list = []
     for gene in locus_list:
@@ -392,7 +392,7 @@ def extract_vars(base_fname,
             continue
         tmp_locus_list.append(gene)
     locus_list = tmp_locus_list
-    for key in genes.keys():
+    for key in list(genes.keys()):
         if key in locus_list:
             continue
         del genes[key]
@@ -418,7 +418,7 @@ def extract_vars(base_fname,
     
     num_vars, num_haplotypes = 0, 0
     full_alleles = {}
-    for gene, ref_gene in genes.items():
+    for gene, ref_gene in list(genes.items()):
         strand = gene_strand[gene]
         left_ext_seq, right_ext_seq = "", ""
         if gene in left_ext_seq_dic:
@@ -444,7 +444,7 @@ def extract_vars(base_fname,
                         continue
 
                     if name in names:
-                        print >> sys.stderr, "Warning: %s is found more than once in Names" % (name)
+                        print("Warning: %s is found more than once in Names" % (name), file=sys.stderr)
                         continue
 
                     names[name] = len(names)
@@ -492,7 +492,7 @@ def extract_vars(base_fname,
             MSA_fname = "hisatgenotype_db/%s/msf/%s_gen.msf" % (base_fname.upper(), gene)
             
         if not os.path.exists(MSA_fname):
-            print >> sys.stderr, "Warning: %s does not exist" % MSA_fname
+            print("Warning: %s does not exist" % MSA_fname, file=sys.stderr)
             continue
 
         names, seqs = read_MSF_file(MSA_fname, left_ext_seq, right_ext_seq)
@@ -512,7 +512,7 @@ def extract_vars(base_fname,
                     seq_lens[seq_len] += 1
 
             max_seq_count = 0
-            for tmp_seq_len, tmp_seq_count in seq_lens.items():
+            for tmp_seq_len, tmp_seq_count in list(seq_lens.items()):
                 if tmp_seq_count > max_seq_count:
                     seq_len = tmp_seq_len
                     max_seq_count = tmp_seq_count
@@ -531,7 +531,7 @@ def extract_vars(base_fname,
         if partial and base_fname == "hla":
             partial_MSA_fname = "hisatgenotype_db/HLA/msf/%s_nuc.msf" % gene
             if not os.path.exists(partial_MSA_fname):
-                print >> sys.stderr, "Warning: %s does not exist" % partial_MSA_fname
+                print("Warning: %s does not exist" % partial_MSA_fname, file=sys.stderr)
                 continue
             partial_names, partial_seqs = read_MSF_file(partial_MSA_fname)
 
@@ -572,7 +572,7 @@ def extract_vars(base_fname,
                 ref_exons.append([ref_seq_map[left], ref_seq_map[right]])
                 next_exon_len = right - left + exon_len
                 if next_exon_len >= len(ref_partial_seq_map):
-                    print >> sys.stderr, "Warning: partial sequences (%s) seem to be incomplete" % gene
+                    print("Warning: partial sequences (%s) seem to be incomplete" % gene, file=sys.stderr)
                     complete = False
                     break
                 ref_partial_exons.append([ref_partial_seq_map[exon_len], ref_partial_seq_map[next_exon_len]])
@@ -588,7 +588,7 @@ def extract_vars(base_fname,
                                                                                    partial_seq_len,
                                                                                    min_var_freq,
                                                                                    False) # Remove empty sequences?
-                for name, seq_id in partial_names.items():
+                for name, seq_id in list(partial_names.items()):
                     if name in names:
                         continue
                     seq = partial_seqs[seq_id]
@@ -630,7 +630,7 @@ def extract_vars(base_fname,
                     exons.append([left, right])
                 gene_exons[gene] = exons
                 exon_counts = {}
-                for exon_i, count in gene_exon_counts[gene].items():
+                for exon_i, count in list(gene_exon_counts[gene].items()):
                     exon_counts[len(gene_exons[gene]) - exon_i - 1] = count
                 gene_exon_counts[gene] = exon_counts
 
@@ -644,17 +644,17 @@ def extract_vars(base_fname,
             backbone_seq, backbone_freq = create_consensus_seq(seqs, seq_len, min_var_freq, True)
             seq_len = find_seq_len(seqs)
 
-        print >> sys.stderr, "%s: number of HLA alleles is %d." % (gene, len(names))
+        print("%s: number of HLA alleles is %d." % (gene, len(names)), file=sys.stderr)
 
         Vars = {}
-        for cmp_name, id in names.items():
+        for cmp_name, id in list(names.items()):
             if cmp_name == backbone_name:
                 continue
             assert id < len(seqs)
             cmp_seq = seqs[id]
             if len(cmp_seq) != seq_len:
-                print >> sys.stderr, "Warning: the length of %s (%d) is different from %d" % \
-                    (cmp_name, len(cmp_seq), seq_len)
+                print("Warning: the length of %s (%d) is different from %d" % \
+                    (cmp_name, len(cmp_seq), seq_len), file=sys.stderr)
                 continue
 
             # DK - debugging purposes
@@ -754,7 +754,7 @@ def extract_vars(base_fname,
                 insertVar('D', deletion)
 
 
-        print >> sys.stderr, "Number of variants is %d." % (len(Vars.keys()))
+        print("Number of variants is %d." % (len(list(Vars.keys()))), file=sys.stderr)
 
         # Compare variants
         def cmp_varKey(a, b):
@@ -784,20 +784,20 @@ def extract_vars(base_fname,
                 return int(a_data) - int(b_data)            
 
         Vars_ = {}
-        for key, values in Vars.items():
+        for key, values in list(Vars.items()):
             freq, names_ = values
             for name in names_:
                 if not name in Vars_:
                     Vars_[name] = [key]
                 else:
                     Vars_[name].append(key)
-        for name, vars in Vars_.items():
+        for name, vars in list(Vars_.items()):
             Vars_[name] = sorted(vars, cmp=cmp_varKey)
 
         # Sanity check -
         #    (1) Reconstruct the other sequences from the backbone sequence and variants and
         #    (2) Confirm these constructed sequences are the same as those input sequences.
-        for cmp_name, id in names.items():
+        for cmp_name, id in list(names.items()):
             if cmp_name == backbone_name:
                 continue
 
@@ -835,27 +835,27 @@ def extract_vars(base_fname,
             assert id < len(seqs)
             cmp_seq = seqs[id].replace('.', '')
             if len(constr_seq) != len(cmp_seq):
-                print >> sys.stderr, "Error: reconstruction fails (%s)! Lengths different: %d vs. %d" % \
-                    (cmp_name, len(constr_seq), len(cmp_seq))
+                print("Error: reconstruction fails (%s)! Lengths different: %d vs. %d" % \
+                    (cmp_name, len(constr_seq), len(cmp_seq)), file=sys.stderr)
                 assert False
 
             # Sanity check
             for s in range(len(constr_seq)):
                 if constr_seq[s] != cmp_seq[s]:
-                    print >> sys.stderr, "Differ at %d: %s vs. %s (reconstruction vs. original)" % \
-                        (s, constr_seq[s], cmp_seq[s])
-                    print "%s:%s vs. %s:%s" % \
-                        (constr_seq[s-10:s], constr_seq[s:s+10], cmp_seq[s-10:s], cmp_seq[s:s+10])
+                    print("Differ at %d: %s vs. %s (reconstruction vs. original)" % \
+                        (s, constr_seq[s], cmp_seq[s]), file=sys.stderr)
+                    print("%s:%s vs. %s:%s" % \
+                        (constr_seq[s-10:s], constr_seq[s:s+10], cmp_seq[s-10:s], cmp_seq[s:s+10]))
 
             if constr_seq != cmp_seq.replace('.', ''):
-                print >> sys.stderr, "Error: reconstruction fails for %s" % (cmp_name)
+                print("Error: reconstruction fails for %s" % (cmp_name), file=sys.stderr)
                 assert False
 
         # Write the backbone sequences into a fasta file
-        print >> backbone_file, ">%s" % (backbone_name)
+        print(">%s" % (backbone_name), file=backbone_file)
         backbone_seq_ = backbone_seq.replace('.', '')
         for s in range(0, len(backbone_seq_), 60):
-            print >> backbone_file, backbone_seq_[s:s+60]
+            print(backbone_seq_[s:s+60], file=backbone_file)
 
         # Remap the backbone allele, which is sometimes slighly different from
         #   fasta version
@@ -871,7 +871,7 @@ def extract_vars(base_fname,
         align_proc = subprocess.Popen(aligner_cmd,
                                       stdout=subprocess.PIPE,
                                       stderr=open("/dev/null", 'w'))
-        best_chr, best_left, best_right, best_AS = "", 0, 0, -sys.maxint
+        best_chr, best_left, best_right, best_AS = "", 0, 0, -sys.maxsize
         for line in align_proc.stdout:
             if line.startswith('@'):
                 continue
@@ -900,7 +900,7 @@ def extract_vars(base_fname,
         chr, left, right = best_chr, best_left, best_right
         align_proc.communicate()
         if left == right:
-            print >> sys.stderr, "Warning: %s (%s) is not remapped" % (gene, ref_gene)
+            print("Warning: %s (%s) is not remapped" % (gene, ref_gene), file=sys.stderr)
             continue
         assert left < right
 
@@ -989,17 +989,17 @@ def extract_vars(base_fname,
                     print cmp_exon_seq_[p:p+60]
                 """
                 if exon_seq_ != cmp_exon_seq_:
-                    print >> sys.stderr, "Waring: exonic sequences do not match (%s)" % gene
+                    print("Waring: exonic sequences do not match (%s)" % gene, file=sys.stderr)
         else:
             exon_str = "%d-%d" % (left, right - 1)
 
-        print >> locus_file, "%s\t%s\t%d\t%d\t%d\t%s\t%s" % \
-            (backbone_name, chr, left, right - 1, len(backbone_seq.replace('.', '')), exon_str, gene_strand[gene])
+        print("%s\t%s\t%d\t%d\t%d\t%s\t%s" % \
+            (backbone_name, chr, left, right - 1, len(backbone_seq.replace('.', '')), exon_str, gene_strand[gene]), file=locus_file)
 
         # Write
         #       (1) variants w.r.t the backbone sequences into a SNP file
         #       (2) pairs of a variant and the corresponding HLA allels into a LINK file    
-        keys = sorted(Vars.keys(), cmp=cmp_varKey)
+        keys = sorted(list(Vars.keys()), cmp=cmp_varKey)
         var2ID = {}
         for k in range(len(keys)):
             locus, type, data = keys[k].split('-')
@@ -1016,20 +1016,20 @@ def extract_vars(base_fname,
             names_ = sorted(names_)            
             varID = "hv%d" % (num_vars)
             tmp_backbone_name = backbone_name
-            print >> var_file, "%s\t%s\t%s\t%d\t%s" % \
-                (varID, type_str, tmp_backbone_name, base_locus + locus, data)
+            print("%s\t%s\t%s\t%d\t%s" % \
+                (varID, type_str, tmp_backbone_name, base_locus + locus, data), file=var_file)
             if freq >= min_var_freq:
-                print >> var_index_file, "%s\t%s\t%s\t%d\t%s" % \
-                    (varID, type_str, tmp_backbone_name, base_locus + locus, data)
-            print >> var_freq_file, "%s\t%.2f" % (varID, freq)
-            print >> link_file, "%s\t%s" % (varID, ' '.join(names_))
+                print("%s\t%s\t%s\t%d\t%s" % \
+                    (varID, type_str, tmp_backbone_name, base_locus + locus, data), file=var_index_file)
+            print("%s\t%.2f" % (varID, freq), file=var_freq_file)
+            print("%s\t%s" % (varID, ' '.join(names_)), file=link_file)
             var2ID[keys[k]] = num_vars
             num_vars += 1
 
         add_seq_len = 0
         # Write haplotypes
         excluded_vars = set()
-        var_leftmost, var_rightmost = sys.maxint, -1
+        var_leftmost, var_rightmost = sys.maxsize, -1
         for k in range(len(keys)):
             key = keys[k]
             if Vars[key][0] < min_var_freq:
@@ -1164,7 +1164,7 @@ def extract_vars(base_fname,
                         h_end += (int(h2_data) - 1)
                     assert h_begin <= h_end
                     h_new_begin = h_begin
-                    for h_j in reversed(range(0, h_i)):
+                    for h_j in reversed(list(range(0, h_i))):
                         hc = haplotypes[h_j].split('#')
                         hc_begin, hc_type, hc_data = hc[-1].split('-')
                         hc_begin = int(hc_begin)
@@ -1178,30 +1178,30 @@ def extract_vars(base_fname,
                     assert h_new_begin <= h_begin
                     h_begin = h_new_begin
                 tmp_backbone_name = backbone_name
-                print >> haplotype_file, "ht%d\t%s\t%d\t%d\t%s" % \
-                    (num_haplotypes, tmp_backbone_name, base_locus + h_begin, base_locus + h_end, ','.join(varIDs))
+                print("ht%d\t%s\t%d\t%d\t%s" % \
+                    (num_haplotypes, tmp_backbone_name, base_locus + h_begin, base_locus + h_end, ','.join(varIDs)), file=haplotype_file)
                 num_haplotypes += 1
                 add_seq_len += (h_end - h_begin + 1)
             assert len(sanity_vars) == len(cur_vars)
                     
             i = j
 
-        print >> sys.stderr, "Length of additional sequences for haplotypes:", add_seq_len
+        print("Length of additional sequences for haplotypes:", add_seq_len, file=sys.stderr)
                     
         # Write all the sequences with dots removed into a file
-        for name, ID in names.items():
-            print >> input_file, ">%s" % (name)
+        for name, ID in list(names.items()):
+            print(">%s" % (name), file=input_file)
             assert ID < len(seqs)
             seq = seqs[ID].replace('.', '')
             for s in range(0, len(seq), 60):
-                print >> input_file, seq[s:s+60]
-            print >> allele_file, name
+                print(seq[s:s+60], file=input_file)
+            print(name, file=allele_file)
 
                     
         # Write partial allele names
         for name in names:
             if name not in full_allele_names:
-                print >> partial_file, name
+                print(name, file=partial_file)
 
     backbone_file.close()
     locus_file.close()
@@ -1274,7 +1274,7 @@ if __name__ == '__main__':
     else:
         locus_list = args.locus_list.split(',')
     if args.inter_gap > args.intra_gap:
-        print >> sys.stderr, "Error: --inter-gap (%d) must be smaller than --intra-gap (%d)" % (args.inter_gap, args.intra_gap)
+        print("Error: --inter-gap (%d) must be smaller than --intra-gap (%d)" % (args.inter_gap, args.intra_gap), file=sys.stderr)
         sys.exit(1)
              
     if args.base_fname.find('/') != -1:
@@ -1296,4 +1296,3 @@ if __name__ == '__main__':
                  args.leftshift,
                  args.partial,
                  args.verbose)
-

@@ -189,7 +189,7 @@ static void conv_refnames_result(JNIEnv *env,
 	DEBUGLOG("count: %d\n", result->count);
 	(*env)->CallVoidMethod(env, jobjList, mthArrayListEnsureCapacity, result->count);
 
-	for(i = 0; i < result->count; i++) {
+	for(i = 0; i < (size_t)result->count; i++) {
 		DEBUGLOG("names[%d] %s\n", i, result->names[i]);
 
 		jobject elem = (*env)->NewStringUTF(env, result->names[i]);
@@ -209,7 +209,7 @@ static void conv_repeat_expand_result(JNIEnv *env,
 	(*env)->CallVoidMethod(env, jobjList, mthArrayListEnsureCapacity, result->count);
 
 	// Add Items
-	for(i = 0; i < result->count; i++) {
+	for(i = 0; i < (size_t)result->count; i++) {
         struct ht2_position *htpos = &result->positions[i];
 
 		DEBUGLOG("position[%d]: %u, %d, %lu\n", i, htpos->chr_id, htpos->direction, htpos->pos);

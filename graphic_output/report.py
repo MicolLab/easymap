@@ -1,6 +1,5 @@
-
-#python ./graphic_output/report.py -variants ./user_projects/project/3_workflow_output/candidate_variants.txt -log ./user_projects/project/2_logs/log.log -output_html ./user_projects/project/3_workflow_output/report.html -project user_projects/project  -mut_type snp -files_dir ./user_projects/project/3_workflow_output/
-#python ./graphic_output/report.py -variants ./user_projects/project/3_workflow_output/insertions_output.txt -log ./user_projects/project/2_logs/log.log -output_html ./user_projects/project/3_workflow_output/report.html -project user_projects/project  -mut_type lin -files_dir ./user_projects/project/3_workflow_output/
+#python3 ./graphic_output/report.py -variants ./user_projects/project/3_workflow_output/candidate_variants.txt -log ./user_projects/project/2_logs/log.log -output_html ./user_projects/project/3_workflow_output/report.html -project user_projects/project  -mut_type snp -files_dir ./user_projects/project/3_workflow_output/
+#python3 ./graphic_output/report.py -variants ./user_projects/project/3_workflow_output/insertions_output.txt -log ./user_projects/project/2_logs/log.log -output_html ./user_projects/project/3_workflow_output/report.html -project user_projects/project  -mut_type lin -files_dir ./user_projects/project/3_workflow_output/
 
 import argparse
 
@@ -951,9 +950,9 @@ htmlFile2 = open('user_projects/' + project_name + '/3_workflow_output/rfeed.htm
 
 with open(output_html, 'r') as htmlFile1:
 		for line in htmlFile1:
-			 line = line.replace('<img class="img" src="', '<img class="img" src="../user_projects/' + project_name + '/3_workflow_output/')
-			 line = line.replace('a href="', 'a href="../user_projects/' + project_name + '/3_workflow_output/')
-			 htmlFile2.write(line)
+			line = line.replace('<img class="img" src="', '<img class="img" src="../user_projects/' + project_name + '/3_workflow_output/')
+			line = line.replace('a href="', 'a href="../user_projects/' + project_name + '/3_workflow_output/')
+			htmlFile2.write(line)
 
 htmlFile2.close()
 

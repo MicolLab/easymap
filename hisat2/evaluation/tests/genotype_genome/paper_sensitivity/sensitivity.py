@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright 2017, Daehwan Kim <infphilo@gmail.com>
 #
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             aligner_cmd += ["-1", fq_fnames[0],
                             "-2", fq_fnames[1]]
             # print >> sys.stderr, "Running:", ' '.join(aligner_cmd)
-            print sample, aligner, type
+            print(sample, aligner, type)
             align_proc = subprocess.Popen(aligner_cmd,
                                           stdout=subprocess.PIPE,
                                           stderr=open("/dev/null", 'w'))
@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
                 if ((aligner == "hisat2" and NH == 1) or (aligner == "bowtie2" and AS > XS and read1_first if flag & 0x40 else read2_first)):
                     if chr in region_loci:
-                        for region, loci in region_loci[chr].items():
+                        for region, loci in list(region_loci[chr].items()):
                             _, _, loci_left, loci_right = loci
                             # there might be a different candidate region for each of left and right reads
                             if pos >= loci_left and pos < loci_right:
@@ -136,5 +136,5 @@ if __name__ == '__main__':
                 gene = "HLA-" + gene
                 if gene not in region_count:
                     continue
-                print "\t%s pair: %d, left+right: %d" % (gene, region_count[gene], region_read1_count[gene] + region_read2_count[gene])
+                print("\t%s pair: %d, left+right: %d" % (gene, region_count[gene], region_read1_count[gene] + region_read2_count[gene]))
             

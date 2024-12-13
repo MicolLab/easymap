@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys, os, subprocess
 import multiprocessing
@@ -170,18 +170,18 @@ def read_repeatdb(repeat_filename):
                     repeat_db[rptRefName][rptName].allele[allele_idx].add_position(chr, pos, strand)
 
     else:
-        print >> sys.stderr, 'Cannot open file', repeat_filename
+        print('Cannot open file', repeat_filename, file=sys.stderr)
 
 
-    print >> sys.stderr, 'Build repeatMap'
+    print('Build repeatMap', file=sys.stderr)
     repeat_map = {}
-    for rptRefName, repeats in repeat_db.items():
+    for rptRefName, repeats in list(repeat_db.items()):
         #print 'Processing', rptRefName
         repeat_pos_list = []
 
-        for repeatName, repeat in repeats.items():
+        for repeatName, repeat in list(repeats.items()):
             #print 'Common Allele:', repeatName, repeat.repeat_name
-            repeat_left = sys.maxint
+            repeat_left = sys.maxsize
             repeat_right = 0
 
             #for allele_id, repeatAllele in repeat.allele.items():
@@ -242,11 +242,11 @@ def repeat_to_genome_pos(repeat_db, repeat_map, rptRefName, pos, cigar_str = '')
 
     i = find_leftmost_pos(rmap, left)
     if i >= len(rmap):
-        print >> sys.stderr, 'Value Error'
+        print('Value Error', file=sys.stderr)
         return
 
     if right > rmap[i][0]:
-        print >> sys.stderr, 'Not repeat'
+        print('Not repeat', file=sys.stderr)
         return
 
     repeat = repeats[rmap[i][1]]
@@ -260,7 +260,7 @@ def repeat_to_genome_pos(repeat_db, repeat_map, rptRefName, pos, cigar_str = '')
         if (left >= rpos) and (right <= rpos + rlen):
             offset = left - rpos
             for genome_pos in allele.positions:
-                print genome_pos[0], genome_pos[1] + offset + 1, genome_pos[2], genome_pos[1]
+                print(genome_pos[0], genome_pos[1] + offset + 1, genome_pos[2], genome_pos[1])
 
 """
 """
@@ -284,7 +284,7 @@ def read_genome(genome_filename):
 
     genome_file.close()
 
-    print >> sys.stderr, "genome is loaded"
+    print("genome is loaded", file=sys.stderr)
     
     return chr_dic
 
@@ -331,7 +331,7 @@ def extract_splice_sites(gtf_fname):
     gtf_file.close()
     
     # Sort exons and merge where separating introns are <=5 bps
-    for tran, [chrom, strand, exons] in trans.items():
+    for tran, [chrom, strand, exons] in list(trans.items()):
             exons.sort()
             tmp_exons = [exons[0]]
             for i in range(1, len(exons)):
@@ -343,7 +343,7 @@ def extract_splice_sites(gtf_fname):
 
     # Calculate and print the unique junctions
     junctions = set()
-    for chrom, strand, exons in trans.values():
+    for chrom, strand, exons in list(trans.values()):
         for i in range(1, len(exons)):
             junctions.add(to_junction_str([chrom, exons[i-1][1], exons[i][0]]))
 
@@ -381,7 +381,7 @@ def read_repeat_info(repeat_filename):
                     repeat_dic[rep][allele].append([chr, pos, strand])
                     repeat_pos[rep][allele].add(pos)
 
-    for rep, repeats in repeat_info.items():
+    for rep, repeats in list(repeat_info.items()):
         def my_cmp(a, b):
             if a[1] < b[1]:
                 return -1
@@ -687,11 +687,11 @@ def repeat_to_genome_alignment(repeat_db, repeat_map, rptRefName, pos, cigar_str
 
     i = find_leftmost_pos(rmap, left)
     if i >= len(rmap):
-        print >> sys.stderr, 'Value Error'
+        print('Value Error', file=sys.stderr)
         return alignments
 
     if right > rmap[i][0]:
-        print >> sys.stderr, 'Not repeat'
+        print('Not repeat', file=sys.stderr)
         return alignments
 
     repeat = repeats[rmap[i][1]]
@@ -775,7 +775,7 @@ def extract_single(infilename,
             prev_read_id = read_id
             continue
 
-        NH, NM, XA = "", sys.maxint, []
+        NH, NM, XA = "", sys.maxsize, []
         for i in range(11, len(cols)):
             col = cols[i]
             # "nM" from STAR
@@ -867,7 +867,7 @@ def extract_single(infilename,
             chr, pos, cigar_str = alignment
             pos, cigar_str, NM_real = adjust_alignment(chr, pos, cigar_str)
             p_str = "%s\t%s\t%d\t%s\tNM:i:%d" % (read_id, chr, pos, cigar_str, NM_real)
-            print >> outfile, p_str
+            print(p_str, file=outfile)
 
         if aligner == "hisat2":
             if prev_read_id != read_id:
@@ -940,7 +940,7 @@ def extract_pair(infilename,
     num_aligned_reads, num_ualigned_reads = 0, 0
     
     prev_read_id, pair_list = "", set()
-    prev_NM = sys.maxint
+    prev_NM = sys.maxsize
     prev_NH1, prev_NH2 = 0, 0
     NH1_real, NH2_real = 0, 0
 
@@ -969,7 +969,7 @@ def extract_pair(infilename,
         if read_id != prev_read_id:
             num_pairs += 1
             pair_list = set()
-            prev_NM = sys.maxint
+            prev_NM = sys.maxsize
 
         flag = int(flag)
         canonical_pos1, canonical_pos2 = int(pos1), int(pos2)
@@ -982,7 +982,7 @@ def extract_pair(infilename,
             continue
 
         concordant = (flag & 0x2 != 0)        
-        NH, NM1, YT, XA = sys.maxint, sys.maxint, "", []
+        NH, NM1, YT, XA = sys.maxsize, sys.maxsize, "", []
         for i in range(11, len(cols)):
             col = cols[i]
             # "nM" from STAR
@@ -1151,7 +1151,7 @@ def extract_pair(infilename,
 
                         if p_str not in pair_reported:
                             pair_reported.add(p_str)
-                            print >> outfile, p_str
+                            print(p_str, file=outfile)
 
             if not me in read_dic:
                 read_dic[me] = []
@@ -1348,7 +1348,7 @@ def compare_single_sam(RNA,
     file.close()
 
     temp_junctions, temp_gtf_junctions = set(), set()
-    for read_name, can_junctions in db_junction_dic.items():
+    for read_name, can_junctions in list(db_junction_dic.items()):
         if len(can_junctions) <= 0:
             continue
 
@@ -1492,7 +1492,7 @@ def compare_single_sam(RNA,
                     break
 
         if found:
-            print >> mapped_file, read_name
+            print(read_name, file=mapped_file)
             mapped += 1
             if snp_included:
                 snp_mapped += 1
@@ -1501,7 +1501,7 @@ def compare_single_sam(RNA,
                 if snp_included:
                     snp_unique_mapped += 1
             if found_at_first:
-                print >> first_mapped_file, read_name
+                print(read_name, file=first_mapped_file)
                 first_mapped += 1
                 if snp_included:
                     snp_first_mapped += 1
@@ -1527,7 +1527,7 @@ def compare_single_sam(RNA,
             false_can_junctions += 1
         else:
             false_noncan_junctions += 1
-    print >> sys.stderr, "\t\t\tfalse junctions: %d (canonical), %d (non-canonical)" % (false_can_junctions, false_noncan_junctions)
+    print("\t\t\tfalse junctions: %d (canonical), %d (non-canonical)" % (false_can_junctions, false_noncan_junctions), file=sys.stderr)
     
     return mapped, unique_mapped, first_mapped, unmapped, aligned, multi_aligned, \
         snp_mapped, snp_unique_mapped, snp_first_mapped, snp_unmapped, \
@@ -1587,7 +1587,7 @@ def compare_paired_sam(RNA,
     file.close()
 
     temp_junctions, temp_gtf_junctions = set(), set()
-    for read_name, can_junctions in db_junction_dic.items():
+    for read_name, can_junctions in list(db_junction_dic.items()):
         if len(can_junctions) <= 0:
             continue
 
@@ -1767,17 +1767,17 @@ def compare_paired_sam(RNA,
                     break
 
         if found:
-            print >> mapped_file, read_name
+            print(read_name, file=mapped_file)
             mapped += 1
             if snp_included:
                 snp_mapped += 1
             if len(maps) == 1:
                 unique_mapped += 1
-                print >> uniq_mapped_file, read_name
+                print(read_name, file=uniq_mapped_file)
                 if snp_included:
                     snp_unique_mapped += 1
             if found_at_first:
-                print >> first_mapped_file, read_name
+                print(read_name, file=first_mapped_file)
                 first_mapped += 1
                 if snp_included:
                     snp_first_mapped += 1
@@ -1802,7 +1802,7 @@ def compare_paired_sam(RNA,
             false_can_junctions += 1
         else:
             false_noncan_junctions += 1
-    print >> sys.stderr, "\t\t\tfalse junctions: %d (canonical), %d (non-canonical)" % (false_can_junctions, false_noncan_junctions)
+    print("\t\t\tfalse junctions: %d (canonical), %d (non-canonical)" % (false_can_junctions, false_noncan_junctions), file=sys.stderr)
         
     
     return mapped, unique_mapped, first_mapped, unmapped, aligned, multi_aligned, \
@@ -1832,9 +1832,9 @@ def extract_mapped_unmapped(read_fname, mapped_id_fname, mapped_fname, unmapped_
                 write = read_id in mapped_ids
 
             if write:
-                print >> mapped_file, line[:-1]
+                print(line[:-1], file=mapped_file)
             else:
-                print >> unmapped_file, line[:-1]
+                print(line[:-1], file=unmapped_file)
 
         read_file.close()
         mapped_file.close()
@@ -1865,7 +1865,7 @@ def sql_execute(sql_db, sql_query):
 """
 def create_sql_db(sql_db):
     if os.path.exists(sql_db):
-        print >> sys.stderr, sql_db, "already exists!"
+        print(sql_db, "already exists!", file=sys.stderr)
         return
     
     columns = [
@@ -1936,14 +1936,14 @@ def write_analysis_data(sql_db, genome_name, database_name):
             database_fname += "_single"
         database_fname += ".analysis"
         database_file = open(database_fname, "w")
-        print >> database_file, "end_type\ttype\taligner\tnum_reads\ttime\tmem\tmapped_reads\tunique_mapped_reads\tunmapped_reads\tmapping_point\ttrue_gtf_junctions\ttemp_junctions\ttemp_gtf_junctions"
+        print("end_type\ttype\taligner\tnum_reads\ttime\tmem\tmapped_reads\tunique_mapped_reads\tunmapped_reads\tmapping_point\ttrue_gtf_junctions\ttemp_junctions\ttemp_gtf_junctions", file=database_file)
         for aligner in aligners:
             for read_type in read_types:
                 sql_row = "SELECT end_type, type, aligner, num_reads, time, mem, mapped_reads, unique_mapped_reads, unmapped_reads, mapping_point, snp_mapped_reads, snp_unique_mapped_reads, snp_unmapped_reads, true_gtf_junctions, temp_junctions, temp_gtf_junctions FROM ReadCosts"
                 sql_row += " WHERE genome = '%s' and head = '%s' and aligner = '%s' and type = '%s' and end_type = '%s' ORDER BY created DESC LIMIT 1" % (genome_name, database_name, aligner, read_type, end_type)
                 output = sql_execute(sql_db, sql_row)
                 if output:
-                    print >> database_file, output
+                    print(output, file=database_file)
 
         database_file.close()
 
@@ -2069,7 +2069,7 @@ def calculate_read_cost(single_end,
             type_sam_file.close()
             if numreads <= 0:
                 continue
-            print >> sys.stderr, "%s\t%d" % (readtype, numreads)
+            print("%s\t%d" % (readtype, numreads), file=sys.stderr)
 
             junctions, junctions_set = [], set()
             type_junction_file = open(type_junction_fname)
@@ -2208,7 +2208,7 @@ def calculate_read_cost(single_end,
                     if version != "":
                         version = int(version)
                     else:
-                        version = sys.maxint
+                        version = sys.maxsize
 
                     if not RNA:
                         cmd += ["--no-spliced-alignment"]
@@ -2417,7 +2417,7 @@ def calculate_read_cost(single_end,
                 if not RNA and readtype != "all":
                     continue
 
-                print >> sys.stderr, "\t%s\t%s" % (aligner_name, str(datetime.now()))
+                print("\t%s\t%s" % (aligner_name, str(datetime.now())), file=sys.stderr)
                 if options != "":
                     option_name = options.replace(' ', '').replace('-', '').replace(',', '')
                     aligner_name = aligner_name + '_' + option_name
@@ -2457,7 +2457,7 @@ def calculate_read_cost(single_end,
                             dummy_cmd = get_aligner_cmd(RNA, aligner, type, index_type, version, options, "../one.fa", "../two.fa", "/dev/null")
                             start_time = datetime.now()
                             if verbose:
-                                print >> sys.stderr, start_time, "\t", " ".join(dummy_cmd)
+                                print(start_time, "\t", " ".join(dummy_cmd), file=sys.stderr)
                             if aligner in ["hisat2", "hisat", "bowtie", "bowtie2", "gsnap", "bwa"]:
                                 proc = subprocess.Popen(dummy_cmd, stdout=open("/dev/null", "w"), stderr=subprocess.PIPE)
                             else:
@@ -2467,14 +2467,14 @@ def calculate_read_cost(single_end,
                             duration = finish_time - start_time
                             duration = duration.total_seconds()
                             if verbose:
-                                print >> sys.stderr, finish_time, "duration:", duration
+                                print(finish_time, "duration:", duration, file=sys.stderr)
                             loading_time = duration
 
                     # Align all reads
                     aligner_cmd = get_aligner_cmd(RNA, aligner, type, index_type, version, options, "../" + type_read1_fname, "../" + type_read2_fname, out_fname)
                     start_time = datetime.now()
                     if verbose:
-                        print >> sys.stderr, "\t", start_time, " ".join(aligner_cmd)
+                        print("\t", start_time, " ".join(aligner_cmd), file=sys.stderr)
                     if aligner in ["hisat2", "hisat", "bowtie", "bowtie2", "gsnap", "bwa", "vg", "minimap2"]:
                         proc = subprocess.Popen(aligner_cmd, stdout=open(out_fname, "w"), stderr=subprocess.PIPE)
                     else:
@@ -2487,11 +2487,11 @@ def calculate_read_cost(single_end,
                     if duration < 0.1:
                         duration = 0.1
                     if verbose:
-                        print >> sys.stderr, "\t", finish_time, "finished:", duration
+                        print("\t", finish_time, "finished:", duration, file=sys.stderr)
 
                     if debug and aligner == "hisat2":
                         os.system("cat metrics.out")
-                        print >> sys.stderr, "\ttime: %.4f" % (duration)
+                        print("\ttime: %.4f" % (duration), file=sys.stderr)
 
                     if aligner == "star" and type in ["", "gtf"]:
                         os.system("mv Aligned.out.sam %s" % out_fname)
@@ -2499,7 +2499,7 @@ def calculate_read_cost(single_end,
                         aligner_cmd = get_aligner_cmd(RNA, aligner, type, index_type, version, options, "../" + type_read1_fname, "../" + type_read2_fname, out_fname, 1)
                         start_time = datetime.now()
                         if verbose:
-                            print >> sys.stderr, "\t", start_time, " ".join(aligner_cmd)
+                            print("\t", start_time, " ".join(aligner_cmd), file=sys.stderr)
                         proc = subprocess.Popen(aligner_cmd, stdout=open(out_fname, "w"), stderr=subprocess.PIPE)
                         proc.communicate()
                         finish_time = datetime.now()
@@ -2508,7 +2508,7 @@ def calculate_read_cost(single_end,
                         if duration < 0.1:
                             duration = 0.1
                         if verbose:
-                            print >> sys.stderr, "\t", finish_time, "finished:", duration
+                            print("\t", finish_time, "finished:", duration, file=sys.stderr)
                     elif aligner == "star" and type == "x2":
                         assert os.path.exists("SJ.out.tab")
                         os.system("awk 'BEGIN {OFS=\"\t\"; strChar[0]=\".\"; strChar[1]=\"+\"; strChar[2]=\"-\";} {if($5>0){print $1,$2,$3,strChar[$4]}}' SJ.out.tab > SJ.out.tab.Pass1.sjdb")
@@ -2518,18 +2518,18 @@ def calculate_read_cost(single_end,
                             os.remove(file)
                         star_index_cmd = "%s/STAR --genomeDir ./ --runMode genomeGenerate --genomeFastaFiles ../../../data/%s.fa --sjdbFileChrStartEnd SJ.out.tab.Pass1.sjdb --sjdbOverhang 99 --runThreadN %d" % (aligner_bin_base, genome, num_threads)
                         if verbose:
-                            print >> sys.stderr, "\t", datetime.now(), star_index_cmd
+                            print("\t", datetime.now(), star_index_cmd, file=sys.stderr)
                         os.system(star_index_cmd)
                         if verbose:
-                            print >> sys.stderr, "\t", datetime.now(), " ".join(dummy_cmd)
+                            print("\t", datetime.now(), " ".join(dummy_cmd), file=sys.stderr)
                         proc = subprocess.Popen(dummy_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         proc.communicate()
                         if verbose:
-                            print >> sys.stderr, "\t", datetime.now(), "finished"
+                            print("\t", datetime.now(), "finished", file=sys.stderr)
                         aligner_cmd = get_aligner_cmd(RNA, aligner, type, index_type, version, options, "../" + type_read1_fname, "../" + type_read2_fname, out_fname, 1)
                         start_time = datetime.now()
                         if verbose:
-                            print >> sys.stderr, "\t", start_time, " ".join(aligner_cmd)
+                            print("\t", start_time, " ".join(aligner_cmd), file=sys.stderr)
                         proc = subprocess.Popen(aligner_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         proc.communicate()
                         finish_time = datetime.now()
@@ -2538,7 +2538,7 @@ def calculate_read_cost(single_end,
                         if duration < 0.1:
                             duration = 0.1
                         if verbose:
-                            print >> sys.stderr, "\t", finish_time, "finished:", duration
+                            print("\t", finish_time, "finished:", duration, file=sys.stderr)
                         os.system("mv Aligned.out.sam %s" % out_fname)
                     elif aligner == "tophat2":
                         os.system("samtools sort -n tophat_out/accepted_hits.bam accepted_hits; samtools view -h accepted_hits.bam > %s" % out_fname)
@@ -2551,7 +2551,7 @@ def calculate_read_cost(single_end,
                         os.system("tar cvzf %s.tar.gz %s &> /dev/null" % (out_fname, out_fname))
 
                 if runtime_only:
-                    print >> sys.stderr, "\t\t\tMemory Usage: %dMB" % (int(mem_usage) / 1024)
+                    print("\t\t\tMemory Usage: %dMB" % (int(mem_usage) / 1024), file=sys.stderr)
                     os.chdir("..")
                     continue
 
@@ -2560,7 +2560,7 @@ def calculate_read_cost(single_end,
                     pid_list = []
                     if paired:
                         if mp_mode:
-                            for i in xrange(mp_num):
+                            for i in range(mp_num):
                                 p = Process(target=extract_pair, args=(out_fname, out_fname2, chr_dic, RNA, aligner, version, repeat_db, repeat_map, debug_dic, i))
                                 pid_list.append(p)
                                 p.start()
@@ -2570,7 +2570,7 @@ def calculate_read_cost(single_end,
 
                             # merge 
                             os.system("mv %s %s" % (out_fname2 + ".0", out_fname2))
-                            for i in xrange(1, mp_num):
+                            for i in range(1, mp_num):
                                 os.system("cat %s >> %s" % (out_fname2 + "." + str(i), out_fname2))
                                 os.system("rm %s" % (out_fname2 + "." + str(i)))
 
@@ -2581,7 +2581,7 @@ def calculate_read_cost(single_end,
                     else:
                         if mp_mode:
                             # Prepare queues
-                            for i in xrange(mp_num): 
+                            for i in range(mp_num): 
                                 p = Process(target=extract_single, args=(out_fname, out_fname2, chr_dic, aligner, version, repeat_db, repeat_map, debug_dic, i))
                                 pid_list.append(p)
                                 p.start()
@@ -2592,7 +2592,7 @@ def calculate_read_cost(single_end,
 
                             # merge 
                             os.system("mv %s %s" % (out_fname2 + ".0", out_fname2))
-                            for i in xrange(1, mp_num):
+                            for i in range(1, mp_num):
                                 os.system("cat %s >> %s" % (out_fname2 + "." + str(i), out_fname2))
                                 os.system("rm %s" % (out_fname2 + "." + str(i)))
                             
@@ -2628,25 +2628,25 @@ def calculate_read_cost(single_end,
                     assert mapped + unmapped == numreads
                     
                     if two_step:
-                        print >> sys.stderr, "\t\t%s" % readtype2
-                    print >> sys.stderr, "\t\taligned: %d, multi aligned: %d" % (aligned, multi_aligned)
-                    print >> sys.stderr, "\t\tcorrectly mapped: %d (%.2f%%) mapping_point: %.2f" % (mapped, float(mapped) * 100.0 / numreads, mapping_point * 100.0 / numreads)
-                    print >> sys.stderr, "\t\tcorrectly mapped at first: %d (%.2f%%)" % (first_mapped, float(first_mapped) * 100.0 / numreads)
-                    print >> sys.stderr, "\t\tuniquely and correctly mapped: %d (%.2f%%)" % (unique_mapped, float(unique_mapped) * 100.0 / numreads)
+                        print("\t\t%s" % readtype2, file=sys.stderr)
+                    print("\t\taligned: %d, multi aligned: %d" % (aligned, multi_aligned), file=sys.stderr)
+                    print("\t\tcorrectly mapped: %d (%.2f%%) mapping_point: %.2f" % (mapped, float(mapped) * 100.0 / numreads, mapping_point * 100.0 / numreads), file=sys.stderr)
+                    print("\t\tcorrectly mapped at first: %d (%.2f%%)" % (first_mapped, float(first_mapped) * 100.0 / numreads), file=sys.stderr)
+                    print("\t\tuniquely and correctly mapped: %d (%.2f%%)" % (unique_mapped, float(unique_mapped) * 100.0 / numreads), file=sys.stderr)
                     snp_numreads = snp_mapped + snp_unmapped
                     if snp_numreads > 0:
-                        print >> sys.stderr, "\t\t\t\tSNP: reads: %d" % (snp_numreads)
-                        print >> sys.stderr, "\t\t\t\tSNP: correctly mapped: %d (%.2f%%)" % (snp_mapped, float(snp_mapped) * 100.0 / snp_numreads)
-                        print >> sys.stderr, "\t\t\t\tSNP: correctly mapped at first: %d (%.2f%%)" % (snp_first_mapped, float(snp_first_mapped) * 100.0 / snp_numreads)
-                        print >> sys.stderr, "\t\t\t\tSNP: uniquely and correctly mapped: %d (%.2f%%)" % (snp_unique_mapped, float(snp_unique_mapped) * 100.0 / snp_numreads)
+                        print("\t\t\t\tSNP: reads: %d" % (snp_numreads), file=sys.stderr)
+                        print("\t\t\t\tSNP: correctly mapped: %d (%.2f%%)" % (snp_mapped, float(snp_mapped) * 100.0 / snp_numreads), file=sys.stderr)
+                        print("\t\t\t\tSNP: correctly mapped at first: %d (%.2f%%)" % (snp_first_mapped, float(snp_first_mapped) * 100.0 / snp_numreads), file=sys.stderr)
+                        print("\t\t\t\tSNP: uniquely and correctly mapped: %d (%.2f%%)" % (snp_unique_mapped, float(snp_unique_mapped) * 100.0 / snp_numreads), file=sys.stderr)
                     if readtype == readtype2:
-                        print >> sys.stderr, "\t\t\t%d reads per sec (all)" % (numreads / max(1.0, duration))
+                        print("\t\t\t%d reads per sec (all)" % (numreads / max(1.0, duration)), file=sys.stderr)
                     if RNA:
-                        print >> sys.stderr, "\t\tjunc. sensitivity %d / %d (%.2f%%), junc. accuracy: %d / %d (%.2f%%)" % \
+                        print("\t\tjunc. sensitivity %d / %d (%.2f%%), junc. accuracy: %d / %d (%.2f%%)" % \
                             (temp_gtf_junctions, len(junctions), float(temp_gtf_junctions) * 100.0 / max(1, len(junctions)), \
-                                 temp_gtf_junctions, temp_junctions, float(temp_gtf_junctions) * 100.0 / max(1, temp_junctions))
+                                 temp_gtf_junctions, temp_junctions, float(temp_gtf_junctions) * 100.0 / max(1, temp_junctions)), file=sys.stderr)
 
-                    print >> sys.stderr, "\t\t\tMemory Usage: %dMB" % (int(mem_usage) / 1024)
+                    print("\t\t\tMemory Usage: %dMB" % (int(mem_usage) / 1024), file=sys.stderr)
 
                     if duration > 0.0:
                         if sql_write and os.path.exists("../" + sql_db_name):
@@ -2669,14 +2669,14 @@ def calculate_read_cost(single_end,
 
                 os.chdir("..")
 
-    print >> sys.stdout, "\t".join(["type", "aligner", "all", "all_time", "mem", "mapped", "unique_mapped", "unmapped", "mapping point", "snp_mapped", "snp_unique_mapped", "snp_unmapped", "true_gtf_junctions", "temp_junctions", "temp_gtf_junctions"])
+    print("\t".join(["type", "aligner", "all", "all_time", "mem", "mapped", "unique_mapped", "unmapped", "mapping point", "snp_mapped", "snp_unique_mapped", "snp_unmapped", "true_gtf_junctions", "temp_junctions", "temp_gtf_junctions"]), file=sys.stdout)
     for line in align_stat:
         outstr = ""
         for item in line:
             if outstr != "":
                 outstr += "\t"
             outstr += str(item)
-        print >> sys.stdout, outstr
+        print(outstr, file=sys.stdout)
 
     if os.path.exists(sql_db_name):
         write_analysis_data(sql_db_name, genome, data_base)

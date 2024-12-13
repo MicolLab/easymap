@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2016, Daehwan Kim <infphilo@gmail.com>
@@ -171,7 +171,7 @@ def build_genotype_genome(base_fname,
                     return a_left - b_left
                 if a_right != b_right:
                     return a_right - b_right
-                return a_lenght - b_length
+                return a_length - b_length
             chr_genes = sorted(chr_genes, cmp=gene_cmp)
         else:
             chr_genes = []

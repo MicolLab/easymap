@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #
 # Copyright 2018, Chanhee Park <parkchanhee@gmail.com> and Daehwan Kim <infphilo@gmail.com>
@@ -30,7 +30,7 @@ ht2_index = '../../evaluation/indexes/HISAT2_22/22_rep'
 # Get default options
 ht2_options = ht2py.get_options()
 
-print ht2_options
+print(ht2_options)
 ht2_options['gVerbose'] = 1
 ht2_options['startVerbose'] = 1
 # or
@@ -38,7 +38,7 @@ ht2_options = {}
 
 handle = ht2py.init(ht2_index, ht2_options)
 
-print ht2py.index_getrefnamebyid(handle, 0)
+print(ht2py.index_getrefnamebyid(handle, 0))
 
 #print ht2py.index_getrefnamebyid(handle, 0, 1, 3, 5, 7, 9)
 # outofindex
@@ -62,7 +62,7 @@ for pos in positions:
     if direction == 1:
         chr_dir = '-'
 
-    print refnames[chr_id].split()[0] + ":" + str(chr_pos) + ':' + chr_dir
+    print(refnames[chr_id].split()[0] + ":" + str(chr_pos) + ':' + chr_dir)
 
 # close handle
 ht2py.close(handle)

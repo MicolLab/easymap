@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2016, Daehwan Kim <infphilo@gmail.com>
@@ -51,9 +51,9 @@ def align_reads(base_fname,
         aligner_cmd += ["-1", read_fnames[0],
                         "-2", read_fnames[1]]
 
-    print >> sys.stderr, "Aligning %s to %s ..." % (' '.join(read_fnames), base_fname)
+    print("Aligning %s to %s ..." % (' '.join(read_fnames), base_fname), file=sys.stderr)
     if verbose:
-        print >> sys.stderr, "\t%s" % (' '.join(aligner_cmd))
+        print("\t%s" % (' '.join(aligner_cmd)), file=sys.stderr)
 
     align_proc = subprocess.Popen(aligner_cmd,
                                   stdout=subprocess.PIPE,
@@ -69,7 +69,7 @@ def align_reads(base_fname,
                                    stderr=open("/dev/null", 'w'))
     sambam_proc.communicate()
 
-    print >> sys.stderr, "Sorting %s ..." % "TBD"
+    print("Sorting %s ..." % "TBD", file=sys.stderr)
     bamsort_cmd = ["samtools",
                    "sort",
                    "--threads", str(threads),
@@ -79,7 +79,7 @@ def align_reads(base_fname,
                                     stderr=open("/dev/null", 'w'))
     bamsort_proc.communicate()
 
-    print >> sys.stderr, "Indexing %s ..." % "TBD"
+    print("Indexing %s ..." % "TBD", file=sys.stderr)
 
     bamindex_cmd = ["samtools",
                     "index",
@@ -116,9 +116,9 @@ def genotype(base_fname,
     # hisat2 graph index files
     genotype_fnames += ["%s.%d.ht2" % (base_fname, i+1) for i in range(8)]
     if not typing_common.check_files(genotype_fnames):
-        print >> sys.stderr, "Error: some of the following files are missing!"
+        print("Error: some of the following files are missing!", file=sys.stderr)
         for fname in genotype_fnames:
-            print >> sys.stderr, "\t%s" % fname
+            print("\t%s" % fname, file=sys.stderr)
         sys.exit(1)
 
     # Align reads, and sort the alignments into a BAM file
@@ -165,11 +165,11 @@ def genotype(base_fname,
 
     # gene alleles
     allele_names = {}
-    for gene_name in genes.keys():
+    for gene_name in list(genes.keys()):
         if gene_name not in allele_names:
             allele_names[gene_name] = []
         gene_name2 = gene_name.split('-')[1]
-        for allele_name in allele_vars.keys():
+        for allele_name in list(allele_vars.keys()):
             allele_name1 = allele_name.split('*')[0]
             if gene_name2 == allele_name1:
                 allele_names[gene_name].append(allele_name)
@@ -196,7 +196,7 @@ def genotype(base_fname,
         Vars[gene_name][var_id] = [var_type, pos, data]
         Var_list[gene_name].append([pos, var_id])
 
-    for gene_name, in_var_list in Var_list.items():
+    for gene_name, in_var_list in list(Var_list.items()):
         Var_list[gene_name] = sorted(in_var_list)
     def lower_bound(Var_list, pos):
         low, high = 0, len(Var_list)
@@ -233,7 +233,7 @@ def genotype(base_fname,
     for test_i in range(len(test_list)):
         test_HLA_list = test_list[test_i]
         for test_HLA_names in test_HLA_list:
-            print >> sys.stderr, "\t%s" % (test_HLA_names)
+            print("\t%s" % (test_HLA_names), file=sys.stderr)
             for gene in test_HLA_names:
                 ref_allele = genes[gene]
                 ref_seq = gene_seqs[gene]
@@ -303,8 +303,8 @@ def genotype(base_fname,
                     debug = False
                     if read_id in ["2339"] and False:
                         debug = True
-                        print "read_id: %s)" % read_id, pos, cigar_str, "NM:", NM, MD, Zs
-                        print "            ", read_seq
+                        print("read_id: %s)" % read_id, pos, cigar_str, "NM:", NM, MD, Zs)
+                        print("            ", read_seq)
 
                     vars = []
                     if Zs:
@@ -394,7 +394,7 @@ def genotype(base_fname,
                     def add_stat(HLA_cmpt, HLA_counts, HLA_count_per_read, exon = True):
                         max_count = max(HLA_count_per_read.values())
                         cur_cmpt = set()
-                        for allele, count in HLA_count_per_read.items():
+                        for allele, count in list(HLA_count_per_read.items()):
                             if count < max_count:
                                 continue
                             """
@@ -414,7 +414,7 @@ def genotype(base_fname,
                         alleles = ["", ""]
                         # alleles = ["B*40:304", "B*40:02:01"]
                         allele1_found, allele2_found = False, False
-                        for allele, count in HLA_count_per_read.items():
+                        for allele, count in list(HLA_count_per_read.items()):
                             if count < max_count:
                                 continue
                             if allele == alleles[0]:
@@ -422,13 +422,13 @@ def genotype(base_fname,
                             elif allele == alleles[1]:
                                 allele2_found = True
                         if allele1_found != allele2_found:
-                            print alleles[0], HLA_count_per_read[alleles[0]]
-                            print alleles[1], HLA_count_per_read[alleles[1]]
+                            print(alleles[0], HLA_count_per_read[alleles[0]])
+                            print(alleles[1], HLA_count_per_read[alleles[1]])
                             if allele1_found:
-                                print ("%s\tread_id %s - %d vs. %d]" % (alleles[0], prev_read_id, max_count, HLA_count_per_read[alleles[1]]))
+                                print(("%s\tread_id %s - %d vs. %d]" % (alleles[0], prev_read_id, max_count, HLA_count_per_read[alleles[1]])))
                             else:
-                                print ("%s\tread_id %s - %d vs. %d]" % (alleles[1], prev_read_id, max_count, HLA_count_per_read[alleles[0]]))
-                            print read_seq
+                                print(("%s\tread_id %s - %d vs. %d]" % (alleles[1], prev_read_id, max_count, HLA_count_per_read[alleles[0]])))
+                            print(read_seq)
 
                         cur_cmpt = sorted(list(cur_cmpt))
                         cur_cmpt = '-'.join(cur_cmpt)
@@ -462,11 +462,11 @@ def genotype(base_fname,
                             # daehwan - for debugging purposes
                             if debug:
                                 if allele in ["DQA1*05:05:01:01", "DQA1*05:05:01:02"]:
-                                    print allele, add, var_id
+                                    print(allele, add, var_id)
 
                     # Decide which allele(s) a read most likely came from
                     # also sanity check - read length, cigar string, and MD string
-                    for var_id, data in Vars[gene].items():
+                    for var_id, data in list(Vars[gene].items()):
                         var_type, var_pos, var_data = data
                         if var_type != "deletion":
                             continue
@@ -490,13 +490,13 @@ def genotype(base_fname,
                                             add_count(var_id, -1)
                                             # daehwan - for debugging purposes
                                             if debug:
-                                                print cmp, var_id, Links[var_id]
+                                                print(cmp, var_id, Links[var_id])
                                     elif var_type == "deletion":
                                         del_len = int(var_data)
                                         if ref_pos < var_pos and ref_pos + length > var_pos + del_len:
                                             # daehwan - for debugging purposes
                                             if debug:
-                                                print cmp, var_id, Links[var_id], -1, Vars[gene][var_id]
+                                                print(cmp, var_id, Links[var_id], -1, Vars[gene][var_id])
                                             # Check if this might be one of the two tandem repeats (the same left coordinate)
                                             cmp_left, cmp_right = cmp[1], cmp[1] + cmp[2]
                                             test1_seq1 = ref_seq[cmp_left-base_locus:cmp_right-base_locus]
@@ -510,7 +510,7 @@ def genotype(base_fname,
                                                 add_count(var_id, -1)
                                     else:
                                         if debug:
-                                            print cmp, var_id, Links[var_id], -1
+                                            print(cmp, var_id, Links[var_id], -1)
                                         add_count(var_id, -1)
                                 var_idx += 1
 
@@ -531,7 +531,7 @@ def genotype(base_fname,
                                         if var_data == read_base:
                                             # daehwan - for debugging purposes
                                             if debug:
-                                                print cmp, var_id, 1, var_data, read_base, Links[var_id]
+                                                print(cmp, var_id, 1, var_data, read_base, Links[var_id])
 
                                             # daehwan - for debugging purposes
                                             if False:
@@ -553,8 +553,8 @@ def genotype(base_fname,
                             var_idx = lower_bound(Var_list[gene], ref_pos)
                             # daehwan - for debugging purposes
                             if debug:
-                                print left_pos, cigar_str, MD, vars
-                                print ref_pos, ins_seq, Var_list[gene][var_idx], Vars[gene][Var_list[gene][var_idx][1]]
+                                print(left_pos, cigar_str, MD, vars)
+                                print(ref_pos, ins_seq, Var_list[gene][var_idx], Vars[gene][Var_list[gene][var_idx][1]])
                                 # sys.exit(1)
                             while var_idx < len(Var_list[gene]):
                                 var_pos, var_id = Var_list[gene][var_idx]
@@ -566,7 +566,7 @@ def genotype(base_fname,
                                         if var_data == ins_seq:
                                             # daehwan - for debugging purposes
                                             if debug:
-                                                print cmp, var_id, 1, Links[var_id]
+                                                print(cmp, var_id, 1, Links[var_id])
                                             add_count(var_id, 1)
                                 var_idx += 1
 
@@ -602,8 +602,8 @@ def genotype(base_fname,
                                         var_len = int(var_data)
                                         if var_len == length:
                                             if debug:
-                                                print cmp, var_id, 1, Links[var_id]
-                                                print ref_seq[var_pos - 10-base_locus:var_pos-base_locus], ref_seq[var_pos-base_locus:var_pos+int(var_data)-base_locus], ref_seq[var_pos+int(var_data)-base_locus:var_pos+int(var_data)+10-base_locus]
+                                                print(cmp, var_id, 1, Links[var_id])
+                                                print(ref_seq[var_pos - 10-base_locus:var_pos-base_locus], ref_seq[var_pos-base_locus:var_pos+int(var_data)-base_locus], ref_seq[var_pos+int(var_data)-base_locus:var_pos+int(var_data)+10-base_locus])
                                             add_count(var_id, 1)
                                 var_idx += 1
 
@@ -634,9 +634,9 @@ def genotype(base_fname,
                     if read_pos != len(read_seq) or \
                             cmp_cigar_str != cigar_str or \
                             cmp_MD != MD:
-                        print >> sys.stderr, "Error:", cigar_str, MD
-                        print >> sys.stderr, "\tcomputed:", cmp_cigar_str, cmp_MD
-                        print >> sys.stderr, "\tcmp list:", cmp_list
+                        print("Error:", cigar_str, MD, file=sys.stderr)
+                        print("\tcomputed:", cmp_cigar_str, cmp_MD, file=sys.stderr)
+                        print("\tcmp list:", cmp_list, file=sys.stderr)
                         assert False            
 
                     prev_read_id = read_id
@@ -648,7 +648,7 @@ def genotype(base_fname,
                 if prev_read_id != None:
                     add_stat(HLA_cmpt, HLA_counts, HLA_count_per_read)
 
-                HLA_counts = [[allele, count] for allele, count in HLA_counts.items()]
+                HLA_counts = [[allele, count] for allele, count in list(HLA_counts.items())]
                 def HLA_count_cmp(a, b):
                     if a[1] != b[1]:
                         return b[1] - a[1]
@@ -660,28 +660,28 @@ def genotype(base_fname,
                 HLA_counts = sorted(HLA_counts, cmp=HLA_count_cmp)
                 for count_i in range(len(HLA_counts)):
                     count = HLA_counts[count_i]
-                    print >> sys.stderr, "\t\t\t\t%d %s (count: %d)" % (count_i + 1, count[0], count[1])
+                    print("\t\t\t\t%d %s (count: %d)" % (count_i + 1, count[0], count[1]), file=sys.stderr)
                     if count_i >= 9:
                         break
-                print >> sys.stderr
+                print(file=sys.stderr)
 
                 def normalize(prob):
                     total = sum(prob.values())
-                    for allele, mass in prob.items():
+                    for allele, mass in list(prob.items()):
                         prob[allele] = mass / total
 
                 def normalize2(prob, length):
                     total = 0
-                    for allele, mass in prob.items():
+                    for allele, mass in list(prob.items()):
                         assert allele in length
                         total += (mass / length[allele])
-                    for allele, mass in prob.items():
+                    for allele, mass in list(prob.items()):
                         assert allele in length
                         prob[allele] = mass / length[allele] / total
 
                 def prob_diff(prob1, prob2):
                     diff = 0.0
-                    for allele in prob1.keys():
+                    for allele in list(prob1.keys()):
                         if allele in prob2:
                             diff += abs(prob1[allele] - prob2[allele])
                         else:
@@ -701,7 +701,7 @@ def genotype(base_fname,
                         return 1
 
                 HLA_prob, HLA_prob_next = {}, {}
-                for cmpt, count in HLA_cmpt.items():
+                for cmpt, count in list(HLA_cmpt.items()):
                     alleles = cmpt.split('-')
                     for allele in alleles:
                         if allele not in HLA_prob:
@@ -718,7 +718,7 @@ def genotype(base_fname,
                 normalize(HLA_prob)
                 def next_prob(HLA_cmpt, HLA_prob, HLA_length):
                     HLA_prob_next = {}
-                    for cmpt, count in HLA_cmpt.items():
+                    for cmpt, count in list(HLA_cmpt.items()):
                         alleles = cmpt.split('-')
                         alleles_prob = 0.0
                         for allele in alleles:
@@ -745,17 +745,17 @@ def genotype(base_fname,
                     HLA_prob[allele] /= float(allele_len)
                 normalize(HLA_prob)
                 """
-                HLA_prob = [[allele, prob] for allele, prob in HLA_prob.items()]
+                HLA_prob = [[allele, prob] for allele, prob in list(HLA_prob.items())]
 
                 HLA_prob = sorted(HLA_prob, cmp=HLA_prob_cmp)
                 success = [False for i in range(len(test_HLA_names))]
                 found_list = [False for i in range(len(test_HLA_names))]
                 for prob_i in range(len(HLA_prob)):
                     prob = HLA_prob[prob_i]
-                    print >> sys.stderr, "\t\t\t\t%d ranked %s (abundance: %.2f%%)" % (prob_i + 1, prob[0], prob[1] * 100.0)
+                    print("\t\t\t\t%d ranked %s (abundance: %.2f%%)" % (prob_i + 1, prob[0], prob[1] * 100.0), file=sys.stderr)
                     if prob_i >= 9:
                         break
-                print >> sys.stderr
+                print(file=sys.stderr)
 
                 """
                 if len(test_HLA_names) == 2:
@@ -963,15 +963,15 @@ def genotype(base_fname,
             if cigar_op in "MIS":
                 read_pos += length
 
-    for var_id, counts in var_counts.items():
+    for var_id, counts in list(var_counts.items()):
         if counts[0] < 2: # or counts[0] * 3 < counts[1]:
             continue
         assert var_id in vars
         var_chr, var_left, var_type, var_data = vars[var_id]
         assert var_id in clnsigs
         var_gene, var_clnsig = clnsigs[var_id]
-        print >> sys.stderr, "\t\t\t%s %s: %s:%d %s %s (%s): %d-%d" % \
-                (var_gene, var_id, var_chr, var_left, var_type, var_data, var_clnsig, counts[0], counts[1])
+        print("\t\t\t%s %s: %s:%d %s %s (%s): %d-%d" % \
+                (var_gene, var_id, var_chr, var_left, var_type, var_data, var_clnsig, counts[0], counts[1]), file=sys.stderr)
 
 
                 
@@ -1038,7 +1038,7 @@ if __name__ == '__main__':
         read_fnames = [args.read_fname_U]
     else:
         if args.read_fname_1 == "" or args.read_fname_2 == "":
-            print >> sys.stderr, "Error: please specify read file names correctly: -U or -1 and -2"
+            print("Error: please specify read file names correctly: -U or -1 and -2", file=sys.stderr)
             sys.exit(1)
         read_fnames = [args.read_fname_1, args.read_fname_2] 
 

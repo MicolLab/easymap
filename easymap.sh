@@ -61,7 +61,7 @@
 
 ############################################################
 # Activate Python virtual environment
-source src/virtualenv-15.1.0/easymap-env/bin/activate
+source src/virtualenv-20.28.0/easymap-env/bin/activate
 
 ############################################################
 # Obtain and store date and time in format with no spaces

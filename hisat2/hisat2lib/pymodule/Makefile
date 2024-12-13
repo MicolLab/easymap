@@ -20,14 +20,14 @@
 all: lib
 
 lib:
-	ARCHFLAGS="-arch x86_64" python ./setup.py build
+	ARCHFLAGS="-arch x86_64" python3 ./setup.py build
 
 install:
-	python ./setup.py install
+	python3 ./setup.py install
 
 clean:
-	python ./setup.py clean
+	python3 ./setup.py clean
 	rm -rf build test
 
 test: lib
-	python ./ht2example.py
+	python3 ./ht2example.py

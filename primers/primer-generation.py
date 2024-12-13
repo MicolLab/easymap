@@ -1,6 +1,5 @@
 import math
 import argparse
-from string import maketrans
 #Script used in order to obtain primers.
 
 parser = argparse.ArgumentParser()
@@ -77,12 +76,12 @@ if mode != 1:
 				return 0
 
 		
-	   	tm=((1000*h)/(s+(1.987*math.log(primer/2000000000))))-273.15
-	   	return tm
+		tm=((1000*h)/(s+(1.987*math.log(primer/2000000000))))-273.15
+		return tm
 
 
 	def reverse_complementary(oligo):
-		revcomp = oligo.translate(maketrans('ACGT', 'TGCA'))[::-1]
+		revcomp = oligo.translate(str.maketrans('ACGT', 'TGCA'))[::-1]
 		return revcomp	
 	def rever(oligo):
 		return oligo[::-1]

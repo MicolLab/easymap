@@ -51,7 +51,6 @@
 
 import argparse, os, re, shutil
 from random import randint, gauss
-from string import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
@@ -202,7 +201,7 @@ def create_basecalling_errors(bce_seq, bce_length):
 
 #Function to obtain the reverse complementary of a DNA sequence
 def reverse_complementary(seq):
-	revcomp = seq.translate(maketrans('ACGT', 'TGCA'))[::-1]
+	revcomp = seq.translate(str.maketrans('ACGT', 'TGCA'))[::-1]
 	return revcomp
 
 
@@ -232,7 +231,7 @@ if len(template_lengths) == 0:
 unique_template_lenghts = list(set(template_lengths))
 num = len(unique_template_lenghts)
 if num > 1 and num != 1:
-	print 'Warning: Not all the templates provided have the same length. The program assumes all the templates have the same length to distribute reads across them. Therefore, read depth may not be homogeneous across contigs. If this is a concern, please provide contigs with equal lengths.\nContinuing anyway.'
+	print('Warning: Not all the templates provided have the same length. The program assumes all the templates have the same length to distribute reads across them. Therefore, read depth may not be homogeneous across contigs. If this is a concern, please provide contigs with equal lengths.\nContinuing anyway.')
 
 #Calculate the number of reads needed to reach the chosen read depth
 #Calculate the number of input template genomes provided by user and the number of reads needed
@@ -300,7 +299,7 @@ if mode == 'se':
 				read_seq = reverse_complementary(read_seq)
 			
 			#Create a string that contains the phred scores of the current read
-			qual_seq = re.sub('\w', 'I', read_seq)
+			qual_seq = re.sub(r'\w', 'I', read_seq)
 			
 			#Write read to FastQ file
 			output.write('@gn' + str(genome_index + 1) + '-rd' + str(read_count) + '\n' + read_seq + '\n+\n' + qual_seq + '\n')
@@ -374,8 +373,8 @@ if mode == 'pe':
 				read_for_seq, read_rev_seq = read_rev_seq, read_for_seq
 			
 			#Create a string that contains the phred scores of the current read
-			qual_for_seq = re.sub('\w', 'I', read_for_seq)
-			qual_rev_seq = re.sub('\w', 'I', read_rev_seq)
+			qual_for_seq = re.sub(r'\w', 'I', read_for_seq)
+			qual_rev_seq = re.sub(r'\w', 'I', read_rev_seq)
 			
 			#Write read pair to FastQ files
 			output_for.write('@gn' + str(genome_index + 1) + '-rd' + str(fragment_count) + '/1\n' + read_for_seq + '\n+\n' + qual_for_seq + '\n')

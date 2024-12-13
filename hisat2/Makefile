@@ -508,11 +508,11 @@ hisat2.bat:
 
 hisat2-build.bat:
 	echo "@echo off" > hisat2-build.bat
-	echo "python %~dp0/hisat2-build %*" >> hisat2-build.bat
+	echo "python3 %~dp0/hisat2-build %*" >> hisat2-build.bat
 
 hisat2-inspect.bat:
 	echo "@echo off" > hisat2-inspect.bat
-	echo "python %~dp0/hisat2-inspect %*" >> hisat2-inspect.bat
+	echo "python3 %~dp0/hisat2-inspect %*" >> hisat2-inspect.bat
 
 
 .PHONY: hisat2-src

@@ -1,4 +1,5 @@
-#!./src/Python-2.7.18/.localpython/bin/python2
+#!./src/Python-3.12.3/.localpython/bin/python3
+
 
 import os, cgi, cgitb, math
 cgitb.enable()
@@ -13,7 +14,7 @@ for basename in os.listdir(dirname):
         filepaths.append(filename)
 
 # Re-populate list with filename, size tuples
-for i in xrange(len(filepaths)):
+for i in range(len(filepaths)):
     filepaths[i] = (filepaths[i], os.path.getsize(filepaths[i]))
 
 # Funtion to manage file sizes
@@ -28,19 +29,19 @@ def convert_size(size_bytes):
 
 
 # Fill html file
-print "Content-type:text/html\r\n\r\n"
-print ""
+print("Content-type:text/html\r\n\r\n")
+print("")
 
 if len(filepaths)==0:
-		print '<div class="emptyResult">There are no input files currently on the server.</div>'
+		print('<div class="emptyResult">There are no input files currently on the server.</div>')
 
 else:
-	print '<hr class="files-separator"></hr>'
+	print('<hr class="files-separator"></hr>')
 	for f in sorted(filepaths):
 		user_input_file = str(f[0].split('user_data/')[1])
 		file_size = convert_size(int(f[1]))
 		if user_input_file[-3:] != '.gz':
-			print '''
+			print('''
 					<div id="file_'''+ user_input_file +'''">
 						<div class="files-item left">
 							<h4>'''+ user_input_file +'''</h4>
@@ -65,4 +66,4 @@ else:
 						</div>
 						<hr class="files-separator"></hr>
 					</div>
-			'''
+			''')

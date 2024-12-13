@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2018, Chanhee Park <parkchanhee@gmail.com> and Daehwan Kim <infphilo@gmail.com>
@@ -179,10 +179,10 @@ def reads_stat(read_file, read_count):
     fp.close()
 
     cnt, mn, mx, avg =  generate_stats(length_map)
-    length_map = sorted(length_map.iteritems(), key=lambda (k,v):(v,k), reverse=True)
+    length_map = sorted(iter(length_map.items()), key=lambda k_v:(k_v[1],k_v[0]), reverse=True)
     if len(length_map) == 0:
         length_map.append((0,0))
-    print cnt, mn, mx, avg, ",".join([str(k) for (k,v) in length_map])
+    print(cnt, mn, mx, avg, ",".join([str(k) for (k,v) in length_map]))
 
 if __name__ == '__main__':
 
@@ -208,4 +208,3 @@ if __name__ == '__main__':
         exit(1)
 
     reads_stat(args.read_file, args.read_count)
-

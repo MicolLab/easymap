@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2015, Daehwan Kim <infphilo@gmail.com>
@@ -80,8 +80,8 @@ def compare_vars(a, b):
 
     # daehwan - for debugging purposes
     if a_chr != b_chr:
-        print a
-        print b
+        print(a)
+        print(b)
     
     assert a_chr == b_chr
     if a_pos != b_pos:
@@ -154,7 +154,7 @@ def generate_haplotypes(snp_file,
             vars_count[id] = 0
         vars_count[id] += 1
     vars_duplicate = set()
-    for id, count in vars_count.items():
+    for id, count in list(vars_count.items()):
         if count <= 1:
             continue
         vars_duplicate.add(id)
@@ -223,8 +223,8 @@ def generate_haplotypes(snp_file,
         else:
             assert type == 'I'
             type = "insertion"
-        print >> snp_file, "%s\t%s\t%s\t%s\t%s" % \
-            (varID, type, chr, pos, data)
+        print("%s\t%s\t%s\t%s\t%s" % \
+            (varID, type, chr, pos, data), file=snp_file)
 
     # genotypes_list looks like
     #    Var0: 0
@@ -301,7 +301,7 @@ def generate_haplotypes(snp_file,
             h_end += (int(h2_data) - 1)
         assert h_begin <= h_end
         h_new_begin = h_begin
-        for h_j in reversed(range(0, h_i)):
+        for h_j in reversed(list(range(0, h_i))):
             hc = haplotypes[h_j].split('#')
             _, hc_begin, hc_type, hc_data, _ = vars[int(hc[-1])]
             hc_begin = int(hc_begin)
@@ -317,8 +317,8 @@ def generate_haplotypes(snp_file,
         for id in h:
             var_dic = vars[int(id)][4]
             h_add.append(var_dic["id2"])
-        print >> haplotype_file, "ht%d\t%s\t%d\t%d\t%s" % \
-            (num_haplotypes, chr, h_new_begin, h_end, ','.join(h_add))
+        print("ht%d\t%s\t%d\t%d\t%s" % \
+            (num_haplotypes, chr, h_new_begin, h_end, ','.join(h_add)), file=haplotype_file)
         num_haplotypes += 1
 
     return num_haplotypes
@@ -447,10 +447,10 @@ def main(genome_file,
                 if testset:
                     ref_seq = chr_seq[start-50:start+50]
                     alt_seq = chr_seq[start-50:start] + allele + chr_seq[start+1:start+50]
-                    print >> ref_testset_file, ">%s_single_%d" % (rs_id, start - 50)
-                    print >> ref_testset_file, ref_seq
-                    print >> alt_testset_file, ">%s_single_%d_%s" % (rs_id, start - 50, ref_seq)
-                    print >> alt_testset_file, alt_seq
+                    print(">%s_single_%d" % (rs_id, start - 50), file=ref_testset_file)
+                    print(ref_seq, file=ref_testset_file)
+                    print(">%s_single_%d_%s" % (rs_id, start - 50, ref_seq), file=alt_testset_file)
+                    print(alt_seq, file=alt_testset_file)
                 
         elif classType == "deletion":
             if start > 0:
@@ -475,10 +475,10 @@ def main(genome_file,
             if testset and delLen > 0 and delLen <= 10:
                 ref_seq = chr_seq[start-50:start+50]
                 alt_seq = chr_seq[start-50:start] + chr_seq[start+delLen:start+50+delLen]
-                print >> ref_testset_file, ">%s_deletion_%d" % (rs_id, start - 50)
-                print >> ref_testset_file, ref_seq
-                print >> alt_testset_file, ">%s_deletion_%d_%s" % (rs_id, start - 50, ref_seq)
-                print >> alt_testset_file, alt_seq
+                print(">%s_deletion_%d" % (rs_id, start - 50), file=ref_testset_file)
+                print(ref_seq, file=ref_testset_file)
+                print(">%s_deletion_%d_%s" % (rs_id, start - 50, ref_seq), file=alt_testset_file)
+                print(alt_seq, file=alt_testset_file)
         else:
             assert classType == "insertion"
             if start > 0:
@@ -497,10 +497,10 @@ def main(genome_file,
                     if testset and insLen > 0 and insLen <= 10:
                         ref_seq = chr_seq[start-50:start+50]
                         alt_seq = chr_seq[start-50:start] + allele + chr_seq[start:start+50-insLen]
-                        print >> ref_testset_file, ">%s_insertion_%d" % (rs_id, start - 50)
-                        print >> ref_testset_file, ref_seq
-                        print >> alt_testset_file, ">%s_insertion_%d_%s" % (rs_id, start - 50, ref_seq)
-                        print >> alt_testset_file, alt_seq
+                        print(">%s_insertion_%d" % (rs_id, start - 50), file=ref_testset_file)
+                        print(ref_seq, file=ref_testset_file)
+                        print(">%s_insertion_%d_%s" % (rs_id, start - 50, ref_seq), file=alt_testset_file)
+                        print(alt_seq, file=alt_testset_file)
 
         if curr_right < end:
             curr_right = end

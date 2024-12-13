@@ -19,6 +19,14 @@
 #
 ################################################################################
 
+# Install necessary dependencies for Python
+echo "Installing necessary dependencies for Python"
+sudo apt-get update
+sudo apt-get install -y build-essential zlib1g-dev libbz2-dev git wget tar \
+                        zip liblzma-dev libncurses5-dev libncursesw5-dev \
+                        libssl-dev make python3-openssl python3-dev libreadline-dev \
+                        libsqlite3-dev curl llvm xz-utils tk-dev
+
 # Deal with argument provided by user
 if ! [ $1 ]; then
 	echo 'Please provide an argument specifying the type of installation: "cli" or "server". Example: "./install.sh server"'
@@ -35,6 +43,7 @@ if [ $1 == server ]; then
 		port=8100
 	elif [ "$2" -ge 8100 ] && [ "$2" -le 8200 ]; then
 		port=$2
+		echo "Using port: $port"
 	else
 		echo 'Please choose a port number between 8100 and 8200. Example: "./install.sh server 8100"'
 		exit
@@ -83,28 +92,34 @@ if [ -d src ]; then rm -rf src; fi
 mkdir src
 cd src
 
-# Get Python-2.7.18
-wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
-tar -zxvf Python-2.7.18.tgz
+# Get Python-3.12.3
+wget https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tgz
+tar -zxvf Python-3.12.3.tgz
 
-# Install Python-2.7.18
-cd Python-2.7.18
+# Install Python-3.12.3
+cd Python-3.12.3
 [ -d .localpython ] || mkdir .localpython
-./configure --prefix=$PWD/.localpython
+./configure --prefix=$PWD/.localpython --enable-optimizations
 make
 make install
 cd ..
 
-# Get virtualenv-15.1.0
-wget https://pypi.python.org/packages/d4/0c/9840c08189e030873387a73b90ada981885010dd9aea134d6de30cd24cb8/virtualenv-15.1.0.tar.gz#md5=44e19f4134906fe2d75124427dc9b716
-tar -zxvf virtualenv-15.1.0.tar.gz
+# Get virtualenv-20.28.0
+wget https://files.pythonhosted.org/packages/bf/75/53316a5a8050069228a2f6d11f32046cfa94fbb6cc3f08703f59b873de2e/virtualenv-20.28.0.tar.gz
+tar -zxvf virtualenv-20.28.0.tar.gz
 
-# Install virtualenv-15.1.0
-cd virtualenv-15.1.0/
-../Python-2.7.18/.localpython/bin/python setup.py install
+# Install virtualenv-20.28.0
+cd virtualenv-20.28.0/
+../Python-3.12.3/.localpython/bin/python3 -m pip install virtualenv
+
+# Ensure pip is up to date
+../Python-3.12.3/.localpython/bin/python3 -m pip install --upgrade pip
 
 # Create virtual environment "easymap-env"
-../Python-2.7.18/.localpython/bin/python virtualenv.py easymap-env -p ../Python-2.7.18/.localpython/bin/python
+../Python-3.12.3/.localpython/bin/python3 -m virtualenv easymap-env -p ../Python-3.12.3/.localpython/bin/python3
+
+# Ensure pip is installed and updated inside the virtual environment
+easymap-env/bin/python3 -m pip install --upgrade pip
 
 # Install Pillow with pip
 [ -d cache ] || mkdir cache
@@ -120,34 +135,34 @@ sudo chmod -R 777 .
 
 # In file 'easymap', set absolute path to the Python binaries of the virtual environment
 # Rest of Python scripts don't need this because are executed after easymap.sh activates the virtual environment
-#sed -i -e "s~ABS_PATH_ENV_PYTHON~${PWD}/src/Python-2.7.18/.localpython/bin/python2~g" easymap
+#sed -i -e "s~ABS_PATH_ENV_PYTHON~${PWD}/src/Python-3.12.3/.localpython/bin/python3~g" easymap
 
 ################################################################################
-
 # Check if Easymap functions properly by running a small project: 
 cp fonts/check.1.fa user_data/
 cp fonts/check.gff user_data/
-run_result=`./easymap -n setup -w snp -sim -r check -g check.gff -ed ref_bc_parmut`
+run_result=`./easymap -n setup -w snp -sim -r check -g check.gff -ed ref_bc_parmut 2>&1`
 
 # Cleanup
-rm  user_data/check.gff
-rm  user_data/check.1.fa 
+rm user_data/check.gff
+rm user_data/check.1.fa
 rm -rf user_projects/*
 
 if [ "$run_result" == "Easymap analysis properly completed." ]; then
-
 	# Set easymap dedicated  HTTP CGI server to run always in the background
 	if [ $1 == server ]; then
-		
+
 		# Run server in the background
-		nohup ./src/Python-2.7.18/.localpython/bin/python2 -m CGIHTTPServer $port &
+		nohup ./src/Python-3.12.3/.localpython/bin/python3 -m http.server --cgi $port &
 		
 		# Modify/create the etc/crontab file to always start easymap server at bootup
-		echo "@reboot   root    cd $PWD; ./src/Python-2.7.18/.localpython/bin/python2 -m CGIHTTPServer $port" >> /etc/crontab
+		echo "@reboot   root    cd $PWD; ./src/Python-3.12.3/.localpython/bin/python3 -m http.server --cgi $port" >> /etc/crontab
 
 		# Save port number to /config/port for future reference for the user
 		echo $port > config/port
 
+		# Print the link to the user
+		echo "Easymap server is now running at: http://localhost:$port"
 	fi
 
 	echo " "
@@ -161,7 +176,6 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 	echo "###################################################################################"
 	echo " "
 	echo " "
-
 else
 
 	echo " "
@@ -175,5 +189,4 @@ else
 	echo "###################################################################################"
 	echo " "
 	echo " "
-
 fi

@@ -25,7 +25,7 @@ def read_file(f):
 					dic[int(column[2])] = 1
 
 
-	list_of_values= dic.values()
+	list_of_values= list(dic.values())
 	total_values= float(sum(list_of_values))
 	
 	dic_percentage= {}
@@ -93,7 +93,7 @@ def draw(dic,sort_positions,out):
 		if values%10 == 0:
 			draw.line(((c+values*step, size_y_window+b) + (c+values*step, size_y_window+6+b)), fill=(0, 0, 0, 0), width=1)
 			draw.text((c+values*step-3, size_y_window+b+10), str(values), font=fnt1, fill=(0,0,0,0))
-	order = range(len(sort_positions))
+	order = list(range(len(sort_positions)))
 
 	#Vertical axis name:
 	#axis draw:
@@ -109,7 +109,7 @@ def draw(dic,sort_positions,out):
 	d = ImageDraw.Draw(txt)
 	d.text( (0, 0), y_name,  font=fnt1, fill=255)
 	w=txt.rotate(90,  expand=1)
-	im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,-size_y_window/3+20),  w)
+	im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2, int(-size_y_window/3+20)),  w)
 
 
 
@@ -135,7 +135,7 @@ def draw(dic,sort_positions,out):
 	im.crop((0, 60, w-0, h-0)).save(out)
 
 	# Print out average RD value 
-	print max(dic, key=dic.get)
+	print(max(dic, key=dic.get))
 
 
 
@@ -143,5 +143,3 @@ def draw(dic,sort_positions,out):
 cov = args.cov
 file_data = read_file(cov)
 draw(file_data[0],file_data[1],args.out)
-
- 

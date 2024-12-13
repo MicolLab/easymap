@@ -1,4 +1,4 @@
-#!src/Python-2.7.18/.localpython/bin/python2
+#!src/Python-3.12.3/.localpython/bin/python3
 
 import os, cgi, cgitb, math
 cgitb.enable()
@@ -23,7 +23,7 @@ def get_size(start_path):
     return total_size
 
 # Re-populate list with filename, size tuples
-for i in xrange(len(dirpaths)):
+for i in range(len(dirpaths)):
     dirpaths[i] = (dirpaths[i], get_size(dirpaths[i]))
 
 # Funtion to manage file sizes
@@ -37,11 +37,11 @@ def convert_size(size_bytes):
    return "%s %s" % (s, size_name[i])
 
 # Fill html file
-print "Content-type:text/html\r\n\r\n" 
+print("Content-type:text/html\r\n\r\n") 
 
 
 if len(dirpaths)==0:
-		print '<div class="emptyResult">There are no projects currently on the server. To start a new one go to "Run new project".</div>'
+		print('<div class="emptyResult">There are no projects currently on the server. To start a new one go to "Run new project".</div>')
 
 else:
 	for f in reversed(sorted(dirpaths, key=lambda x: x[0])):
@@ -57,7 +57,7 @@ else:
 			status='Status file not available'
 
 		if status != 'Status file not available':
-			print '''
+			print('''
 				<!-- <div style="background-color:#79e59d; border:solid green 1px; border-radius:5px; padding:10px;"> -->
 				<!-- <div style="background-color:rgb(250,250,250); box-shadow: 0px 0px 5px 5px rgb(220,220,220); border-radius:5px; padding:13px 15px 15px 25px;"> -->
 				<div style="background-color: #77d197; border-top: 4px solid rgb(130,130,130); border-radius: 0 0 5px 5px; padding:13px 15px 15px 25px;">
@@ -67,20 +67,20 @@ else:
 					Project size: ''' + folder_size +'''<br><br>
 					<div class="managing-buttons">
 						<a href="view-log.htm?p='''+ project +'''" class="button">View log file</a>		
-			'''
+			''')
 
 			if status == 'finished':
-				print '''<a href="view-report.htm?p=''' + project + '''" class="button">View report</a> '''
+				print('''<a href="view-report.htm?p=''' + project + '''" class="button">View report</a> ''')
 				
 			if status == 'running':
-				print '''<form><input type="button" class="button" onclick="displayStopProject(\''''+ project +'''\')" value="Stop execution" /></form>'''
+				print('''<form><input type="button" class="button" onclick="displayStopProject(\''''+ project +'''\')" value="Stop execution" /></form>''')
 
 			if status != 'running':
-				print '''<form><input type="button" class="button" onclick="displayRemoveProject(\''''+ project +'''\')" value="Remove from disk" /></form>'''
+				print('''<form><input type="button" class="button" onclick="displayRemoveProject(\''''+ project +'''\')" value="Remove from disk" /></form>''')
 
-			print '</div>'
+			print('</div>')
 
-			print '''
+			print('''
 				<div id="stopPrj_'''+ project +'''" style="display:none">
 					Are you sure you want to stop running this project?
 					<form>
@@ -96,10 +96,10 @@ else:
 						<input type="button" onclick="hideRemoveProject(\''''+ project +'''\')" value="Cancel"/>
 					</form>
 				</div>
-			'''
+			''')
 
 		else:
-			print '''
+			print('''
 				<div style="background-color:#79e59d; border:solid green 1px; border-radius:5px; padding:10px;">
 
 				<h4>Project: '''+ project +'''</h4>
@@ -116,8 +116,6 @@ else:
 						<input type="button" onclick="hideRemoveProject(\''''+ project +'''\')" value="Cancel"/>
 					</form>
 				</div>
-			'''
+			''')
 		
-		print '</div><br>'
-
-
+		print('</div><br>')

@@ -90,7 +90,7 @@ echo 'pid workflow '$$ >> $my_status_file
 
 #Check genome size to set interval_width
 {
-	interval_width=`python2 $location/scripts_snp/set-interval.py -a $f1/$my_gs`
+	interval_width=`python3 $location/scripts_snp/set-interval.py -a $f1/$my_gs`
 } || {
 	interval_width=4000001
 	echo $(date "+%F > %T")': set-interval.py failed.' >> $my_log_file
@@ -183,7 +183,7 @@ function get_problem_va {
 
 	#Groom vcf
 	{
-		python2 $location/scripts_snp/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va  2>> $my_log_file
+		python3 $location/scripts_snp/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of vcf-groomer.py with F2 data.' >> $my_log_file
@@ -208,7 +208,7 @@ function get_problem_va {
 
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -fasta $f1/$my_gs -dp_min $dp_min -dp_max $dp_max -qual_min $problemSample_snpQualityTheshold -mut_type $mut_type  2>> $my_log_file
+		python3 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -fasta $f1/$my_gs -dp_min $dp_min -dp_max $dp_max -qual_min $problemSample_snpQualityTheshold -mut_type $mut_type  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -293,7 +293,7 @@ function get_control_va {
 
 	#Groom vcf
 	{
-		python2 $location/scripts_snp/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va  2>> $my_log_file
+		python3 $location/scripts_snp/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of vcf-groomer.py with control data.' >> $my_log_file
@@ -315,7 +315,7 @@ function get_control_va {
 	if [ $dp_max -le 40 ]; then dp_max=100 ; fi
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -fasta $f1/$my_gs -dp_min 10 -dp_max $dp_max -qual_min 20  2>> $my_log_file
+		python3 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -fasta $f1/$my_gs -dp_min 10 -dp_max $dp_max -qual_min 20  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -341,7 +341,7 @@ function get_control_va {
 
 function depth_alignment {
 	{
-		python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $1 -out $f1/coverage_alignment1.txt  2>> $my_log_file
+		python3 $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $1 -out $f1/coverage_alignment1.txt  2>> $my_log_file
 		rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
 
 	} || {
@@ -352,7 +352,7 @@ function depth_alignment {
 	}
 
 	{
-		av_rd=`python2 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1.txt   -out $2  2>> $my_log_file `
+		av_rd=`python3 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1.txt   -out $2  2>> $my_log_file `
 
 	} || {
 		echo $(date "+%F > %T")': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
@@ -376,7 +376,7 @@ function cr_analysis {
 
 	# Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS  2>> $my_log_file
+		python3 $location/scripts_snp/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during the second execution of variants-filter.py .' >> $my_log_file
@@ -388,8 +388,8 @@ function cr_analysis {
 
 	# Create input for varanalyzer and run varanalyzer.py (one file for the candidate region and one for the whole genome)
 	{
-		python2 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt  2>> $my_log_file
-		python2 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/F2_control_comparison.va -b $f1/snp-to-varanalyzer-total.txt  2>> $my_log_file
+		python3 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt  2>> $my_log_file
+		python3 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/F2_control_comparison.va -b $f1/snp-to-varanalyzer-total.txt  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
@@ -400,8 +400,8 @@ function cr_analysis {
 	echo $(date "+%F > %T")': Input for varanalyzer finished.' >> $my_log_file
 	# Varanalyzer
 	{
-		python2 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output.txt 2>> $my_log_file
-		python2 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer-total.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output_total.txt  2>> $my_log_file
+		python3 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output.txt 2>> $my_log_file
+		python3 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer-total.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output_total.txt  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of varanalyzer.py .' >> $my_log_file
@@ -413,8 +413,8 @@ function cr_analysis {
 
 	# Run primer generation script
 	{
-		python2 $location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -out $f1/primer_generation_output.txt  -mode 2   2>> $my_log_file
-		python2 $location/primers/primer-generation.py -file $f1/varanalyzer_output_total.txt -fasta $f1/$my_gs -out $f1/primer_generation_output_total.txt  -mode 2   2>> $my_log_file
+		python3 $location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -out $f1/primer_generation_output.txt  -mode 2   2>> $my_log_file
+		python3 $location/primers/primer-generation.py -file $f1/varanalyzer_output_total.txt -fasta $f1/$my_gs -out $f1/primer_generation_output_total.txt  -mode 2   2>> $my_log_file
 
 	}|| {
 		echo $(date "+%F > %T")': primer-generation.py failed.'>> $my_log_file
@@ -422,8 +422,8 @@ function cr_analysis {
 	echo $(date "+%F > %T")': primer-generation.py finished.' >> $my_log_file
 	
 	# Run extend-snp-variants-info                                              --project-name $project_name
-	result_extend_snp_info=`python2 $location/scripts_snp/extend-snp-variants-info.py  --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --project-name $project_name --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt --region CR 2>> $my_log_file`
-	result_extend_snp_info=`python2 $location/scripts_snp/extend-snp-variants-info.py  --variants $f1/primer_generation_output_total.txt --snp-info $f1/snp-to-varanalyzer-total.txt --project-name $project_name --map-info $f1/map_info.txt --output-file $f3/candidate_variants_total.txt --region total 2>> $my_log_file`
+	result_extend_snp_info=`python3 $location/scripts_snp/extend-snp-variants-info.py  --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --project-name $project_name --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt --region CR 2>> $my_log_file`
+	result_extend_snp_info=`python3 $location/scripts_snp/extend-snp-variants-info.py  --variants $f1/primer_generation_output_total.txt --snp-info $f1/snp-to-varanalyzer-total.txt --project-name $project_name --map-info $f1/map_info.txt --output-file $f3/candidate_variants_total.txt --region total 2>> $my_log_file`
 	
 	if [ $result_extend_snp_info == 'success' ]; then
 		echo $(date "+%F > %T")": extend-snp-variants-info.py finished." >> $my_log_file
@@ -436,7 +436,7 @@ function cr_analysis {
 	
 	# Filter SNPs to draw
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $2   2>> $my_log_file
+		python3 $location/scripts_snp/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $2   2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during third execution of variants-filter.py . ' >> $my_log_file
@@ -448,7 +448,7 @@ function cr_analysis {
 
 	# Draw candidates 
 	{
-		python2 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python3 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 		
 	} || {
 		echo $(date "+%F > %T")': Error during execution of graphic-output.py .' >> $my_log_file
@@ -458,10 +458,10 @@ function cr_analysis {
 	}
 	echo $(date "+%F > %T")': Graphic output created.' >> $my_log_file
 
-	# python2 ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -cross bc -snp_analysis_type par  
+	# python3 ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -cross bc -snp_analysis_type par  
 	# (6) Create graphic output
 	{
-		python2 $location/graphic_output/graphic-output.py -my_mut $my_mut  -interval_width $interval_width  -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python3 $location/graphic_output/graphic-output.py -my_mut $my_mut  -interval_width $interval_width  -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 		
 	} || {
 		echo $(date "+%F > %T")': Error during execution of graphic-output.py .' >> $my_log_file
@@ -483,7 +483,7 @@ function cr_analysis {
 	}
 
 	{
-		python2 $location/graphic_output/report.py -files_dir $f3 -variants $f3/candidate_variants.txt -log $f2/log.log -output_html $f3/report.html -project $project_name -mut_type $my_mut  2>> $my_log_file
+		python3 $location/graphic_output/report.py -files_dir $f3 -variants $f3/candidate_variants.txt -log $f2/log.log -output_html $f3/report.html -project $project_name -mut_type $my_mut  2>> $my_log_file
 		
 	} || {
 		echo $(date "+%F > %T")': Error during report generation.' >> $my_log_file
@@ -517,13 +517,13 @@ then
 	get_control_va
 
 	#draw snps
-	python2 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
-	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	# (2) Run VA operations: Remove control SNPs from problem file
 	my_operation_mode=A
 	{
-		python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
+		python3 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -539,7 +539,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 600000 -window_space 500000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python3 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 600000 -window_space 500000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -576,12 +576,12 @@ then
 	get_control_va
 
 	#draw snps
-	python2 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
-	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	# (2) Run VA filter: eliminate SNPs with FA > 0.5 from control reads
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -fasta $f1/$my_gs -af_max 0.5 2>> $my_log_file
+		python3 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -fasta $f1/$my_gs -af_max 0.5 2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -593,7 +593,7 @@ then
 
 	# (3) Run af-comparison: Intersection of filtered control SNPs with problem reads: outputs VA file with 4 columns of allele absolute frequence
 	{
-		python2 $location/scripts_snp/af-comparison.py -mode $my_mutbackgroud -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs -step 1 2>> $my_log_file 
+		python3 $location/scripts_snp/af-comparison.py -mode $my_mutbackgroud -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs -step 1 2>> $my_log_file 
 
 	} || {
 		echo $(date "+%F > %T")': Error during execution of af_comparison.py .' >> $my_log_file
@@ -609,7 +609,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 350000 -window_space 250000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type par  2>> $my_log_file
+			python3 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 350000 -window_space 250000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type par  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -621,7 +621,7 @@ then
 
 		# (5) Re-write F2_control_comparison.va
 		{
-			python2 $location/scripts_snp/af-comparison.py -mode $my_mutbackgroud -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs -step 2 2>> $my_log_file 
+			python3 $location/scripts_snp/af-comparison.py -mode $my_mutbackgroud -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs -step 2 2>> $my_log_file 
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of af_comparison.py .' >> $my_log_file
@@ -634,7 +634,7 @@ then
 		# Filler SNPs: AFs between 0.2 and 0.8 present in both samples, only for drawing 
 
 		{
-			python2 $location/scripts_snp/af-comparison.py -mode $my_mutbackgroud -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/filler_variants.va -f_input $f1/$my_gs -step 3 2>> $my_log_file 
+			python3 $location/scripts_snp/af-comparison.py -mode $my_mutbackgroud -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/filler_variants.va -f_input $f1/$my_gs -step 3 2>> $my_log_file 
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of af_comparison.py .' >> $my_log_file
@@ -670,13 +670,13 @@ then
 	get_control_va
 
 	#draw snps
-	python2 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
-	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	# (2) Run VA operations: Remove control SNPs from problem file
 	my_operation_mode=A
 	{
-		python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
+		python3 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -692,7 +692,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python3 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 
 		} || {
@@ -729,9 +729,9 @@ then
 
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -fasta $f1/$my_gs -af_min 0.75  2>> $my_log_file
+		python3 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -fasta $f1/$my_gs -af_min 0.75  2>> $my_log_file
 		#draw snps
-		python2 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python3 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during the second execution of variants-filter.py .' >> $my_log_file
@@ -744,7 +744,7 @@ then
 
 	# (3) Change ref seq, generate a "noref genome"
 	{
-		python2 $location/scripts_snp/change-snp.py -var $f1/control_filtered2.va  -gnm_ref $f1/$my_gs -out $f1/gnm_ref_merged/genome2.fa  2>> $my_log_file
+		python3 $location/scripts_snp/change-snp.py -var $f1/control_filtered2.va  -gnm_ref $f1/$my_gs -out $f1/gnm_ref_merged/genome2.fa  2>> $my_log_file
 	
 		rm -rf $f1/$my_gs
 		mv $f1/gnm_ref_merged/genome2.fa $f1/gnm_ref_merged/genome.fa
@@ -761,12 +761,12 @@ then
 	get_problem_va
 
 	#draw snps
-	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	# (5) Run VA operations: Intersection to get SNPs for mapping the mutation
 	my_operation_mode=I
 	{
-		python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered2.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  2>> $my_log_file
+		python3 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered2.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -782,7 +782,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison_mapping.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python3 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -795,9 +795,9 @@ then
 		# (7) Run VA operations: Remove control SNPs from problem file 
 		my_operation_mode=A
 		{
-			python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
+			python3 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 			#draw snps
-			#python2 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+			#python3 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 		} || {
 			echo $(date "+%F > %T")': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -832,13 +832,13 @@ then
 	get_control_va
 
 	#draw snps
-	python2 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
-	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+	python3 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	# (2) Run VA operations: Intersection to get mapping SNPs
 	my_operation_mode=I
 	{
-		python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  2>> $my_log_file
+		python3 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 
 	} || {
 		echo $(date "+%F > %T")': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -855,7 +855,7 @@ then
 	if [ $(wc -l < $f1/F2_control_comparison_mapping.va) -gt 1 ]
 	then 
 		{
-			python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+			python3 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width $interval_width -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 		} || {
 			echo $(date "+%F > %T")': Error during execution of map-mutation.py .' >> $my_log_file
@@ -869,9 +869,9 @@ then
 		# (4) Run VA operations: Remove control SNPs from problem
 		my_operation_mode=A
 		{
-			python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
+			python3 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 			#draw snps
-			#python2 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+			#python3 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 		} || {
 			echo $(date "+%F > %T")': Error during first execution of variants-operations.py .' >> $my_log_file

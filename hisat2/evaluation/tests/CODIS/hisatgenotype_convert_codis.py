@@ -1,1 +1,5 @@
+from hisat2 import hisatgenotype_modules
+from hisat2.hisatgenotype_scripts import hisatgenotype_convert_codis
+
+
 hisatgenotype_modules/hisatgenotype_convert_codis.py

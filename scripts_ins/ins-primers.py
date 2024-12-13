@@ -1,6 +1,6 @@
 # This script creates .fq files from a SAM imput that contain reads corresponding to the insertion. This .fq files will then be used to reconstruct the 5 a 3 prime sequences of each insertion. 
 
-#Comando de pruebas: python lin-primers_v3.py -sam_in alignment4.sam -var_in variants.txt -sam_out out
+#Comando de pruebas: python3 lin-primers_v3.py -sam_in alignment4.sam -var_in variants.txt -sam_out out
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-sam_in', action="store", dest = 'input_sam')

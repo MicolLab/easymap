@@ -1,9 +1,9 @@
-#!src/Python-2.7.18/.localpython/bin/python2
+#!src/Python-3.12.3/.localpython/bin/python3
 
 import cgi, cgitb, subprocess, os, json
 cgitb.enable()
 
-print 'Content-type:application/json\r\n\r\n'
+print('Content-type:application/json\r\n\r\n')
 
 # Set some empty lists that will contain the names of the files
 files_fasta_basenames = list()
@@ -41,7 +41,7 @@ files_otherFiles = sorted(files_otherFiles)
 
 all_files = [files_fasta_basenames, files_fasta, files_fastq, files_otherFiles]
 
-print json.dumps(all_files)
+print(json.dumps(all_files))
 
 
 '''

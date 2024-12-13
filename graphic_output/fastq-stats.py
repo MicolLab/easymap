@@ -97,7 +97,7 @@ def boxplot_stats(lista):
 		position2 = position1 + 1
 		position1 =  lista[int(position1)]
 		position2 = lista[int(position2)]
-		per_50 = (postion1 + position2)/2 
+		per_50 = (position1 + position2)/2 
 
 	position2 = float((lenght+1)/4)
 	if position2.is_integer():
@@ -255,7 +255,7 @@ def Draw_box_plot(table,out):
 pre_dic = fasq_preprocess(files)[0]
 phred_result = fasq_preprocess(files)[1]
 if phred_result == 1:
-	print phred_result
+	print(phred_result)
 	exit()
 lenght_reads = int(lenght_reads_cal(pre_dic))
 
@@ -283,6 +283,4 @@ for repetitions in range((lenght_reads/group)-1):
 
 Draw_box_plot(final_list,out)
 
-print phred_result
-
-
+print(phred_result)

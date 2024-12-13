@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys, subprocess
 import re
 from argparse import ArgumentParser, FileType
@@ -203,7 +203,7 @@ def main(genome_file, rpt_name):
                     seq = reverse_complement(seq)
 
                 if seq != repeat_sequence:
-                    print 'Mismatch', seq, repeat_sequence, snp_cnt, coord, snp_id_list, repeat_length
+                    print('Mismatch', seq, repeat_sequence, snp_cnt, coord, snp_id_list, repeat_length)
                     
     fp.close()
 

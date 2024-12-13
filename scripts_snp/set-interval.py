@@ -42,4 +42,4 @@ if av_chr <= 40000000 and av_chr > 1 : interval_width = 4000000
 if av_chr > 40000000 and av_chr < 100000000 : interval_width = 10000000
 if av_chr >= 100000000 : interval_width = 20000000
 
-print interval_width
+print (interval_width)

@@ -1,4 +1,4 @@
-#!./src/Python-2.7.18/.localpython/bin/python2
+#!./src/Python-3.12.3/.localpython/bin/python3
 
 # ./easymap -n project_name -w snp -sim -r at -g chr1+4.gff -rs ref -cr bc -co par_mut -sm 600 -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,5860210+100 -ss 25+100,0+500,100+1+50+se
 # ./easymap -n ins-test -w ins -sim -r at2 -i at_chloroplast.fa -g chr1+4.gff -sm 10 -ss 15+100,0+500,100+1+50+pe
@@ -47,47 +47,47 @@ args = parser.parse_args()
 generic_help_message = "Please refer to the documentation for comprehensive help."
 
 if args.usage:
-	print "Please see section 'easymap command line arguments' in the documentation."
-	quit()
+    print("Please see section 'easymap command line arguments' in the documentation.")
+    quit()
 
 # Process the general arguments
 
 if args.project_name == "n/p":
-	project_name = "unnamed_project"
+    project_name = "unnamed_project"
 else:
-	project_name = args.project_name
+    project_name = args.project_name
 
 problems = []
 error = 0
 
 if args.workflow == "n/p":
-	error = 1
-	problems.append("Argument -w/--workflow is required.")
+    error = 1
+    problems.append("Argument -w/--workflow is required.")
 
 if args.ref_seq == "n/p":
-	error = 1
-	problems.append("Argument -r/--reference-sequence is required.")
+    error = 1
+    problems.append("Argument -r/--reference-sequence is required.")
 
 if args.gff_file == "n/p":
-	error = 1
-	problems.append("Argument -g/--gff-file is required.")
+    error = 1
+    problems.append("Argument -g/--gff-file is required.")
 
 if error == 1: 
-	print "=======================================================\nCOMMAND ERROR. Please fix the following issues:"
-	for items in problems:
-		print "-" + items
-	print generic_help_message
-	print "======================================================="
-	quit()
+    print("=======================================================\nCOMMAND ERROR. Please fix the following issues:")
+    for items in problems:
+        print(("-" + items))
+    print(generic_help_message)
+    print("=======================================================")
+    quit()
 
 # Process other arguments
 workflow = args.workflow
 
 # Fill the vaiable data_source with 'sim' or 'exp' depending on whether the user used or not the --simulate/-sim flag
 if args.simulate:
-	data_source = 'sim'
+    data_source = 'sim'
 else:
-	data_source = 'exp'
+    data_source = 'exp'
 
 ref_seq = args.ref_seq
 ins_seq = args.ins_seq
@@ -99,18 +99,18 @@ reads_sample = args.reads_sample
 #sim_seq = args.sim_seq
 
 if args.exp_design == "n/p":
-	is_ref_strain = "n/p"
-	cross_type = "n/p"
-	control_type = "n/p"
+    is_ref_strain = "n/p"
+    cross_type = "n/p"
+    control_type = "n/p"
 
 if args.exp_design != "n/p":
-	is_ref_strain = args.exp_design.split('_')[0]
-	cross_type = args.exp_design.split('_')[1]
-	control_type = args.exp_design.split('_')[2]
+    is_ref_strain = args.exp_design.split('_')[0]
+    cross_type = args.exp_design.split('_')[1]
+    control_type = args.exp_design.split('_')[2]
 
 if control_type == "n/p":
-	control_parental = "n/p"
-	snp_analysis_type = "n/p"
+    control_parental = "n/p"
+    snp_analysis_type = "n/p"
 
 reads_control = args.reads_control
 read_s = "n/p"
@@ -129,14 +129,14 @@ error = 0
 # Check whether the user has provided a project_name and it has no space:  
 is_there_space = project_name.split(" ")
 if len(is_there_space) != 1:
-	error = 1
-	problems.append("Argument -n/--project-name: the name provided cannot contain spaces.")
+    error = 1
+    problems.append("Argument -n/--project-name: the name provided cannot contain spaces.")
 
 # Check whether user_data directory exists
 input_directory = "./user_data"
 if os.path.isdir(input_directory) == False:
-	error = 1
-	problems.append("The directory /user_data could not be found. Please create it and place your input files inside.")
+    error = 1
+    problems.append("The directory /user_data could not be found. Please create it and place your input files inside.")
 
 #THE FOLLOWING LINES ARE DEPRECATED
 #else:
@@ -160,410 +160,410 @@ input_files = os.listdir(input_directory)
 fasta_name_has_bad_format = False
 
 if len(ref_seq.split(".")) != 1:
-	error = 1
-	problems.append("Argument -r/--reference-sequence: the name provided cannot contain dots.")
-	fasta_name_has_bad_format = True
+    error = 1
+    problems.append("Argument -r/--reference-sequence: the name provided cannot contain dots.")
+    fasta_name_has_bad_format = True
 
 if len(ref_seq.split(" ")) != 1:
-	error = 1
-	problems.append("Argument -r/--reference-sequence: the name provided cannot contain spaces.")
-	fasta_name_has_bad_format = True
+    error = 1
+    problems.append("Argument -r/--reference-sequence: the name provided cannot contain spaces.")
+    fasta_name_has_bad_format = True
 
 if fasta_name_has_bad_format == False:
-	# Check if there are .fa files in the directory user_data that have the string provided by the user as basename
-	refs_in_input_files = fnmatch.filter(input_files, ref_seq + '*.[Ff][Aa]') # fnmatch filters a list using a string that accepts wildcards
-	refs_in_input_files.sort()
-	if not refs_in_input_files:
-		error = 1
-		problems.append("Argument -r/--reference-sequence: the name provided does not match the basename of any .fa file in the directory /user_data.")
+    # Check if there are .fa files in the directory user_data that have the string provided by the user as basename
+    refs_in_input_files = fnmatch.filter(input_files, ref_seq + '*.[Ff][Aa]') # fnmatch filters a list using a string that accepts wildcards
+    refs_in_input_files.sort()
+    if not refs_in_input_files:
+        error = 1
+        problems.append("Argument -r/--reference-sequence: the name provided does not match the basename of any .fa file in the directory /user_data.")
 
 # Check gff file
 if gff_file not in input_files:
-		error = 1
-		problems.append("Argument -g/--gff-file: the name provided does not match any file in the directory /user_data.")
+        error = 1
+        problems.append("Argument -g/--gff-file: the name provided does not match any file in the directory /user_data.")
 
 # In case the user decides to give an annotation file, check it.
 if ann_file != "n/p":
-	if ann_file not in input_files:
-		error = 1
-		problems.append("Argument -a/--annotation-file: the name provided does not match any file in the directory /user_data.")
+    if ann_file not in input_files:
+        error = 1
+        problems.append("Argument -a/--annotation-file: the name provided does not match any file in the directory /user_data.")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 
 SNPexperimentalDesignsAllowed = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'noref_bc_f2wt', 'noref_oc_parmut', 'ref_oc_polstr', 'n/p']
 
 if workflow == "snp":
-	if args.exp_design == "n/p":
-		error = 1
-		problems.append("Argument -ed/--exp-design is required.")
+    if args.exp_design == "n/p":
+        error = 1
+        problems.append("Argument -ed/--exp-design is required.")
 
-	if str(args.exp_design) not in SNPexperimentalDesignsAllowed: 
-		error = 1
-		problems.append("Argument -ed/--exp-design: the experimental design provided is not supported.")
+    if str(args.exp_design) not in SNPexperimentalDesignsAllowed: 
+        error = 1
+        problems.append("Argument -ed/--exp-design: the experimental design provided is not supported.")
 
-	else:
-		if control_type == "f2wt": 
-			snp_analysis_type = "f2wt"
-			control_parental = "n/p"
+    else:
+        if control_type == "f2wt": 
+            snp_analysis_type = "f2wt"
+            control_parental = "n/p"
 
-		else: 
-			if control_type.startswith('parm'):
-				snp_analysis_type = 'par'
-				control_parental = 'mut'
-			if control_type.startswith('pols'):
-				snp_analysis_type = 'par'
-				control_parental = 'nomut'
+        else: 
+            if control_type.startswith('parm'):
+                snp_analysis_type = 'par'
+                control_parental = 'mut'
+            if control_type.startswith('pols'):
+                snp_analysis_type = 'par'
+                control_parental = 'nomut'
 
 
 '''
 if workflow == "snp":
-	if control_type == "n/p":
-		error = 1
-		problems.append("Argument -ed/--exp_design is required.")
-	else:
-		
-		if snp_analysis_type == "f2wt":
-			if cross_type == "oc":
-				error = 1
-				problems.append("This program does not support the experimental design chosen.")
-			else:
-				cross_type = "bc"
-				control_parental = "n/p"
-				if data_source == "sim":
-					if is_ref_strain == "n/p":
-						error = 1
-						problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide a mutant_background in the -ed/--exp_design argument.") #######################################################3
-				#else:
-				#	is_ref_strain = "n/p"
+    if control_type == "n/p":
+        error = 1
+        problems.append("Argument -ed/--exp_design is required.")
+    else:
+        
+        if snp_analysis_type == "f2wt":
+            if cross_type == "oc":
+                error = 1
+                problems.append("This program does not support the experimental design chosen.")
+            else:
+                cross_type = "bc"
+                control_parental = "n/p"
+                if data_source == "sim":
+                    if is_ref_strain == "n/p":
+                        error = 1
+                        problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide a mutant_background in the -ed/--exp_design argument.") #######################################################3
+                #else:
+                #	is_ref_strain = "n/p"
 
-		if snp_analysis_type == "par":
-			if cross_type == "n/p": error = 1; problems.append("Argument -ed/--exp_design  is required.")
-			if is_ref_strain == "n/p": error = 1; problems.append("Argument -ed/--exp_design  is required.") 
-			if control_parental == "n/p": error = 1; problems.append("Argument -ed/--exp_design is required.") 
-			
-			if is_ref_strain == "noref" and cross_type == "oc" and control_parental == "nomut":
-				error = 1
-				problems.append("This program does not support the experimental design specified ( -ed/--exp_design noref_oc_parnomut).")
-			#if cross_type == "bc" and is_ref_strain =="noref":
-			#	error = 1
-			#	problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
-			if is_ref_strain == "ref" and cross_type == "bc" and control_parental != "mut":
-				error = 1
-				problems.append("The experimental design specified (-ed/--exp_design ref_bc_parnomut) is impossible.")
+        if snp_analysis_type == "par":
+            if cross_type == "n/p": error = 1; problems.append("Argument -ed/--exp_design  is required.")
+            if is_ref_strain == "n/p": error = 1; problems.append("Argument -ed/--exp_design  is required.") 
+            if control_parental == "n/p": error = 1; problems.append("Argument -ed/--exp_design is required.") 
+            
+            if is_ref_strain == "noref" and cross_type == "oc" and control_parental == "nomut":
+                error = 1
+                problems.append("This program does not support the experimental design specified ( -ed/--exp_design noref_oc_parnomut).")
+            #if cross_type == "bc" and is_ref_strain =="noref":
+            #	error = 1
+            #	problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
+            if is_ref_strain == "ref" and cross_type == "bc" and control_parental != "mut":
+                error = 1
+                problems.append("The experimental design specified (-ed/--exp_design ref_bc_parnomut) is impossible.")
 '''
 
 
 #If the analysis mode is insertions, an insertion sequence must be given
 if workflow == "ins":
-	if ins_seq == "n/p":
-		error = 1
-		problems.append("Argument -i/--insertion-sequence is required.")
-	else:
-		if ins_seq not in input_files:
-			error = 1
-			problems.append("Argument -i/--insertion-sequence: the name provided does not match any file in the directory /user_data.")
+    if ins_seq == "n/p":
+        error = 1
+        problems.append("Argument -i/--insertion-sequence is required.")
+    else:
+        if ins_seq not in input_files:
+            error = 1
+            problems.append("Argument -i/--insertion-sequence: the name provided does not match any file in the directory /user_data.")
 
 #If the user chooses to simulate reads:  
 if data_source == "sim":
-	
-	# Check that JSON exists
-	try: f = open('./simulator/sim_parameters.json', 'r'); f.close()
-	except: error = 1; problems.append("JSON file not found. Please review your JSON input file.")
+    
+    # Check that JSON exists
+    try: f = open('./simulator/sim_parameters.json', 'r'); f.close()
+    except: error = 1; problems.append("JSON file not found. Please review your JSON input file.")
 
-	#Parse JSON file
-	try:
-		with open('./simulator/sim_parameters.json') as data_file:    
-		    sim_parameters = json.load(data_file)
+    #Parse JSON file
+    try:
+        with open('./simulator/sim_parameters.json') as data_file:    
+            sim_parameters = json.load(data_file)
 
-		# If the user provided a basename that does not match any files, many of the following checks are impossible.
-		# Therefore, do the following only if refs_in_input_files is not empty:
-		if refs_in_input_files:
-			# Function to parse fasta file
-			def read_fasta(fp):
-				name, seq = None, []
-				for line in fp:
-					line = line.rstrip()
-					if line.startswith('>'):
-						if name: yield (name, ''.join(seq))
-						name, seq = line, []
-					else:
-						seq.append(line)
-				if name: yield (name, ''.join(seq))
+        # If the user provided a basename that does not match any files, many of the following checks are impossible.
+        # Therefore, do the following only if refs_in_input_files is not empty:
+        if refs_in_input_files:
+            # Function to parse fasta file
+            def read_fasta(fp):
+                name, seq = None, []
+                for line in fp:
+                    line = line.rstrip()
+                    if line.startswith('>'):
+                        if name: yield (name, ''.join(seq))
+                        name, seq = line, []
+                    else:
+                        seq.append(line)
+                if name: yield (name, ''.join(seq))
 
-			# Create variable to contain the legth of the genome.
-			genome_length = 0
+            # Create variable to contain the legth of the genome.
+            genome_length = 0
 
-			# This list contains the length of each contig and the total length. The number of elements corresponds to the number of contigs in the genome.
-			ref_seq_stats = []
+            # This list contains the length of each contig and the total length. The number of elements corresponds to the number of contigs in the genome.
+            ref_seq_stats = []
 
-			for contig in refs_in_input_files:
-				# Read fasta file
-				with open('user_data/' + contig) as fp:
-					for name, seq in read_fasta(fp):
-						contig_length = len(seq)
-						genome_length += contig_length
-						ref_seq_stats.append(contig_length)
-		
-			# Process user input
-			if workflow == "snp":
-				if sim_parameters["SimMut"]["NumberMutations"] == "" : error = 1; problems.append("JSON file requires a value for NumberMutations field.")
-				if len(sim_parameters["SimMut"]) != 1 : error = 1; problems.append("Incorrect format for SimMut field in JSON file.") 
-				if len(sim_parameters["SimRecsel"]) != 4 : error = 1; problems.append("Incorrect format for SimRecsel field in JSON file.") 
-				if len(sim_parameters["SimSeq"]) != 8 : error = 1; problems.append("Incorrect format for SimSeq field in JSON file.") 
-			else:
-				if sim_parameters["SimMut"]["NumberMutations"] == "" : error = 1; problems.append("JSON file requires a value for NumberMutations field.")
-				if len(sim_parameters["SimSeq"]) != 8 : error = 1; problems.append("Incorrect format for SimSeq field in JSON file.") 
-			
-			#Check sim_mut ex: 40
-			if sim_parameters["SimMut"]["NumberMutations"] != "":
-				sim_mut = sim_parameters["SimMut"]["NumberMutations"]
-				# First of all, check that info provided is an integer
-				try:
+            for contig in refs_in_input_files:
+                # Read fasta file
+                with open('user_data/' + contig) as fp:
+                    for name, seq in read_fasta(fp):
+                        contig_length = len(seq)
+                        genome_length += contig_length
+                        ref_seq_stats.append(contig_length)
+        
+            # Process user input
+            if workflow == "snp":
+                if sim_parameters["SimMut"]["NumberMutations"] == "" : error = 1; problems.append("JSON file requires a value for NumberMutations field.")
+                if len(sim_parameters["SimMut"]) != 1 : error = 1; problems.append("Incorrect format for SimMut field in JSON file.") 
+                if len(sim_parameters["SimRecsel"]) != 4 : error = 1; problems.append("Incorrect format for SimRecsel field in JSON file.") 
+                if len(sim_parameters["SimSeq"]) != 8 : error = 1; problems.append("Incorrect format for SimSeq field in JSON file.") 
+            else:
+                if sim_parameters["SimMut"]["NumberMutations"] == "" : error = 1; problems.append("JSON file requires a value for NumberMutations field.")
+                if len(sim_parameters["SimSeq"]) != 8 : error = 1; problems.append("Incorrect format for SimSeq field in JSON file.") 
+            
+            #Check sim_mut ex: 40
+            if sim_parameters["SimMut"]["NumberMutations"] != "":
+                sim_mut = sim_parameters["SimMut"]["NumberMutations"]
+                # First of all, check that info provided is an integer
+                try:
 
-					# Try to convert the user input into an integer to determine if it is a number
-					# This conversion also fails if the user types a float because python parses it as string
-					# So, with this single line it can be determined if input is an integer
-					int(sim_mut)
+                    # Try to convert the user input into an integer to determine if it is a number
+                    # This conversion also fails if the user types a float because python parses it as string
+                    # So, with this single line it can be determined if input is an integer
+                    int(sim_mut)
 
-					# Calculate the ratio between reference bases and mutations
-					mut_per_mb = int(sim_mut) / (float(genome_length) / 1000000)
+                    # Calculate the ratio between reference bases and mutations
+                    mut_per_mb = int(sim_mut) / (float(genome_length) / 1000000)
 
-					if workflow == "snp":
-						#Check that number of mutations is < 100 / Mb
-						if mut_per_mb > 100.0:
-							error = 1; problems.append("JSON file - SimMut - NumberMutations: the number of EMS SNPs to create is over the maximum allowed (100/Mb).")
-						sim_mut = sim_mut + "+e"		
-					if workflow == "ins":
-						#Check that number of mutations is < 1 / Mb
-						if mut_per_mb > 1.0:
-							error = 1; problems.append("JSON file - SimMut - NumberMutations: the number of insertions to create is over the maximum allowed (1/Mb).")
-						sim_mut = sim_mut + "+li"
+                    if workflow == "snp":
+                        #Check that number of mutations is < 100 / Mb
+                        if mut_per_mb > 100.0:
+                            error = 1; problems.append("JSON file - SimMut - NumberMutations: the number of EMS SNPs to create is over the maximum allowed (100/Mb).")
+                        sim_mut = sim_mut + "+e"		
+                    if workflow == "ins":
+                        #Check that number of mutations is < 1 / Mb
+                        if mut_per_mb > 1.0:
+                            error = 1; problems.append("JSON file - SimMut - NumberMutations: the number of insertions to create is over the maximum allowed (1/Mb).")
+                        sim_mut = sim_mut + "+li"
 
-				except ValueError:
-					error = 1
-					problems.append("JSON file - SimMut - NumberMutations: the information provided is not an integer.")
+                except ValueError:
+                    error = 1
+                    problems.append("JSON file - SimMut - NumberMutations: the information provided is not an integer.")
 
 
-			if len(sim_parameters["SimRecsel"]) == 4 and workflow == "snp":
-				# Calculate the number of contigs in the reference genome
-				number_of_contigs = len(ref_seq_stats)
+            if len(sim_parameters["SimRecsel"]) == 4 and workflow == "snp":
+                # Calculate the number of contigs in the reference genome
+                number_of_contigs = len(ref_seq_stats)
 
-				#0,14-1,31-2,33-3,15-4,5-5,2/0,24;1,42;2,25;3,6;4,1;5,1+1,10000000+50
-				try: 
-					if len(sim_parameters["SimRecsel"]["RecombinationFrequencies"]) != number_of_contigs:
-						error = 1
-						problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format (the number of recombination frequency lists does not match the number of contigs in the reference sequence).")
-					already = 0
-					recombination_frequences=''
-					for ch in sim_parameters["SimRecsel"]["RecombinationFrequencies"]:
-						c = sim_parameters["SimRecsel"]["RecombinationFrequencies"][ch].split("-")
-						for v in c: 
-							v = v.split(",")
-							if v[0] == "" or v[1] == "":
-								if already != 1:
-									already = 1
-									error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format.")
+                #0,14-1,31-2,33-3,15-4,5-5,2/0,24;1,42;2,25;3,6;4,1;5,1+1,10000000+50
+                try: 
+                    if len(sim_parameters["SimRecsel"]["RecombinationFrequencies"]) != number_of_contigs:
+                        error = 1
+                        problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format (the number of recombination frequency lists does not match the number of contigs in the reference sequence).")
+                    already = 0
+                    recombination_frequences=''
+                    for ch in sim_parameters["SimRecsel"]["RecombinationFrequencies"]:
+                        c = sim_parameters["SimRecsel"]["RecombinationFrequencies"][ch].split("-")
+                        for v in c: 
+                            v = v.split(",")
+                            if v[0] == "" or v[1] == "":
+                                if already != 1:
+                                    already = 1
+                                    error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format.")
 
-							try: int(v[0]); int(v[1])
-							except: error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format. Use integers.")
+                            try: int(v[0]); int(v[1])
+                            except: error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format. Use integers.")
 
-							if len(v) != 2:
-								if already != 1:
-									already = 1
-									error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format.")
+                            if len(v) != 2:
+                                if already != 1:
+                                    already = 1
+                                    error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format.")
 
-						recombination_frequences = recombination_frequences + sim_parameters["SimRecsel"]["RecombinationFrequencies"][ch] + '/'
+                        recombination_frequences = recombination_frequences + sim_parameters["SimRecsel"]["RecombinationFrequencies"][ch] + '/'
 
-					#Check contig and position of causal mutation
-					try: causalmut_contig = int(sim_parameters["SimRecsel"]["ContigCausalMutation"])
-					except: error = 1; problems.append("JSON file - SimRecsel - ContigCausalMutation: Invalid value for the contig containing the causal muation. Use an integer.")
+                    #Check contig and position of causal mutation
+                    try: causalmut_contig = int(sim_parameters["SimRecsel"]["ContigCausalMutation"])
+                    except: error = 1; problems.append("JSON file - SimRecsel - ContigCausalMutation: Invalid value for the contig containing the causal muation. Use an integer.")
 
-					try: causalmut_position = int(sim_parameters["SimRecsel"]["PositionCausalMutation"])
-					except: error = 1; problems.append("JSON file - SimRecsel - PositionCausalMutation: Invalid position for the causal muation. Use an integer.")
+                    try: causalmut_position = int(sim_parameters["SimRecsel"]["PositionCausalMutation"])
+                    except: error = 1; problems.append("JSON file - SimRecsel - PositionCausalMutation: Invalid position for the causal muation. Use an integer.")
 
-					if causalmut_contig > len(ref_seq_stats):
-						error = 1
-						problems.append("JSON file - SimRecsel - ContigCausalMutation: contig not present in the reference sequence.")
-					
-					else:
-						if int(ref_seq_stats[causalmut_contig-1]) < causalmut_position: 
-							error = 1
-							problems.append("JSON file - SimRecsel - PositionCausalMutation: position not present in the contig specified.")
+                    if causalmut_contig > len(ref_seq_stats):
+                        error = 1
+                        problems.append("JSON file - SimRecsel - ContigCausalMutation: contig not present in the reference sequence.")
+                    
+                    else:
+                        if int(ref_seq_stats[causalmut_contig-1]) < causalmut_position: 
+                            error = 1
+                            problems.append("JSON file - SimRecsel - PositionCausalMutation: position not present in the contig specified.")
 
-					# Check parameter 3 (number of recombinant chromosomes to generate)
-					n_ch_rec = sim_parameters["SimRecsel"]["NumberRecombinantChromosomes"]
-					try:
-						int(n_ch_rec)
-					except:
-						error = 1
-						problems.append("JSON file - SimRecsel - NumberRecombinantChromosomes: the parameter provided is not an integer.")
-					
-					# Create sim_recsel string for easymap.sh
-					# sim-recsel.py within easymap will only be used in r mode (recessive mutation). Therefore, there is no need to ask the user to specify the mode.
-					
-					sim_recsel = recombination_frequences[:-1] + "+" + str(causalmut_contig) + ',' + str(causalmut_position)  + "+r+" + str(n_ch_rec)				
+                    # Check parameter 3 (number of recombinant chromosomes to generate)
+                    n_ch_rec = sim_parameters["SimRecsel"]["NumberRecombinantChromosomes"]
+                    try:
+                        int(n_ch_rec)
+                    except:
+                        error = 1
+                        problems.append("JSON file - SimRecsel - NumberRecombinantChromosomes: the parameter provided is not an integer.")
+                    
+                    # Create sim_recsel string for easymap.sh
+                    # sim-recsel.py within easymap will only be used in r mode (recessive mutation). Therefore, there is no need to ask the user to specify the mode.
+                    
+                    sim_recsel = recombination_frequences[:-1] + "+" + str(causalmut_contig) + ',' + str(causalmut_position)  + "+r+" + str(n_ch_rec)				
 
-				except:
-					error = 1
-					problems.append("JSON file - SimRecsel:  the parameters provided have an incorrect format.")   
-			
-			if workflow == "ins":
-				sim_recsel = "n/p"
-				control_parental = "n/p"
-			#sim_seq 1+100,0+500,100+1+50+se           
-			if len(sim_parameters["SimSeq"]) == 8 :
+                except:
+                    error = 1
+                    problems.append("JSON file - SimRecsel:  the parameters provided have an incorrect format.")   
+            
+            if workflow == "ins":
+                sim_recsel = "n/p"
+                control_parental = "n/p"
+            #sim_seq 1+100,0+500,100+1+50+se           
+            if len(sim_parameters["SimSeq"]) == 8 :
 
-				try:
-					options = ("se","pe")
-					if str(sim_parameters["SimSeq"]["Library"]) not in options: 
-						error = 1
-						problems.append("JSON file - SimSeq - Library: invalid library type. Choose between 'se' and 'pe'.")
-					else: 
-						lib_type_sample = str(sim_parameters["SimSeq"]["Library"])
-						lib_type_control = str(sim_parameters["SimSeq"]["Library"])
+                try:
+                    options = ("se","pe")
+                    if str(sim_parameters["SimSeq"]["Library"]) not in options: 
+                        error = 1
+                        problems.append("JSON file - SimSeq - Library: invalid library type. Choose between 'se' and 'pe'.")
+                    else: 
+                        lib_type_sample = str(sim_parameters["SimSeq"]["Library"])
+                        lib_type_control = str(sim_parameters["SimSeq"]["Library"])
 
-					try: int(sim_parameters["SimSeq"]["FragmentSize"])
-					except: error = 1; problems.append("JSON file - SimSeq - FragmentSize: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["FragmentSize"])
+                    except: error = 1; problems.append("JSON file - SimSeq - FragmentSize: Invalid choice. Use an integer.")
 
-					try: int(sim_parameters["SimSeq"]["ReadSd"])
-					except: error = 1; problems.append("JSON file - SimSeq - ReadSd: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["ReadSd"])
+                    except: error = 1; problems.append("JSON file - SimSeq - ReadSd: Invalid choice. Use an integer.")
 
-					try: int(sim_parameters["SimSeq"]["FragmentSd"])
-					except: error = 1; problems.append("JSON file - SimSeq - FragmentSd: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["FragmentSd"])
+                    except: error = 1; problems.append("JSON file - SimSeq - FragmentSd: Invalid choice. Use an integer.")
 
-					try: int(sim_parameters["SimSeq"]["ReadDepth"])
-					except: error = 1; problems.append("JSON file - SimSeq - ReadDepth: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["ReadDepth"])
+                    except: error = 1; problems.append("JSON file - SimSeq - ReadDepth: Invalid choice. Use an integer.")
 
-					try: int(sim_parameters["SimSeq"]["ReadSize"])
-					except: error = 1; problems.append("JSON file - SimSeq - ReadSize: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["ReadSize"])
+                    except: error = 1; problems.append("JSON file - SimSeq - ReadSize: Invalid choice. Use an integer.")
 
-					try: int(sim_parameters["SimSeq"]["ErrorRate"])
-					except: error = 1; problems.append("JSON file - SimSeq - ErrorRate: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["ErrorRate"])
+                    except: error = 1; problems.append("JSON file - SimSeq - ErrorRate: Invalid choice. Use an integer.")
 
-					try: int(sim_parameters["SimSeq"]["GCbias"])
-					except: error = 1; problems.append("JSON file - SimSeq - GCbias: Invalid choice. Use an integer.")
+                    try: int(sim_parameters["SimSeq"]["GCbias"])
+                    except: error = 1; problems.append("JSON file - SimSeq - GCbias: Invalid choice. Use an integer.")
 
-					sim_seq = str(sim_parameters["SimSeq"]["ReadDepth"]) + '+' + str(sim_parameters["SimSeq"]["ReadSize"]) + ',' + str(sim_parameters["SimSeq"]["ReadSd"]) + '+' + str(sim_parameters["SimSeq"]["FragmentSize"]) +',' + str(sim_parameters["SimSeq"]["FragmentSd"]) + '+' + str(sim_parameters["SimSeq"]["ErrorRate"]) + '+' + str(sim_parameters["SimSeq"]["GCbias"]) + '+' + str(sim_parameters["SimSeq"]["Library"])
+                    sim_seq = str(sim_parameters["SimSeq"]["ReadDepth"]) + '+' + str(sim_parameters["SimSeq"]["ReadSize"]) + ',' + str(sim_parameters["SimSeq"]["ReadSd"]) + '+' + str(sim_parameters["SimSeq"]["FragmentSize"]) +',' + str(sim_parameters["SimSeq"]["FragmentSd"]) + '+' + str(sim_parameters["SimSeq"]["ErrorRate"]) + '+' + str(sim_parameters["SimSeq"]["GCbias"]) + '+' + str(sim_parameters["SimSeq"]["Library"])
 
-				except:
-					error = 1
-					problems.append("JSON file - SimSeq: the parameters provided have an incorrect format.")
-	except:
-		error =1
-		problems.append("Incorrect JSON file format. Please review your JSON input file.") 
+                except:
+                    error = 1
+                    problems.append("JSON file - SimSeq: the parameters provided have an incorrect format.")
+    except:
+        error =1
+        problems.append("Incorrect JSON file format. Please review your JSON input file.") 
 
-		
+        
 #If the user is providing its own data (not simulating reads), reads should be provided:
 if data_source == "exp":
-	# Simulator parameters are defined as 'n/p'
-	sim_mut = 'n/p'
-	sim_recsel = 'n/p'
-	sim_seq = 'n/p'
+    # Simulator parameters are defined as 'n/p'
+    sim_mut = 'n/p'
+    sim_recsel = 'n/p'
+    sim_seq = 'n/p'
 
-	if reads_sample == "n/p":
-		error = 1
-		problems.append("Argument -p/--reads-test is required. Alternatively, you can use the -sim/--simulate-reads mode.")
-	else:
-		RS = reads_sample.split(",")
-		if len(RS) == 1:
-			lib_type_sample = "se" 
-			read_s = reads_sample
-		elif len(RS) == 2:
-			lib_type_sample ="pe"
-			read_f = RS[0]
-			read_r= RS[1]
+    if reads_sample == "n/p":
+        error = 1
+        problems.append("Argument -p/--reads-test is required. Alternatively, you can use the -sim/--simulate-reads mode.")
+    else:
+        RS = reads_sample.split(",")
+        if len(RS) == 1:
+            lib_type_sample = "se" 
+            read_s = reads_sample
+        elif len(RS) == 2:
+            lib_type_sample ="pe"
+            read_f = RS[0]
+            read_r= RS[1]
 
-	# Check names of reads
-	if lib_type_sample == "se":
-		
-		if reads_sample not in input_files:
-			error = 1
-			problems.append("Argument -p/--reads-test: the name provided does not match any file in the directory /user_data.")	
+    # Check names of reads
+    if lib_type_sample == "se":
+        
+        if reads_sample not in input_files:
+            error = 1
+            problems.append("Argument -p/--reads-test: the name provided does not match any file in the directory /user_data.")	
 
-	if lib_type_sample == "pe":
-		
-		if read_f not in input_files: 
-			error = 1
-			problems.append("Argument -p/--reads-test: the name provided does not match any file in the directory /user_data.")
-		
-		if read_r not in input_files:
-			error = 1
-			problems.append("Argument -p/--reads-test: the name provided does not match any file in the directory /user_data.")
-		else:
-			if read_f == read_r:
-				error = 1
-				problems.append("Argument -p/--reads-test: the two names provided are identical.")
+    if lib_type_sample == "pe":
+        
+        if read_f not in input_files: 
+            error = 1
+            problems.append("Argument -p/--reads-test: the name provided does not match any file in the directory /user_data.")
+        
+        if read_r not in input_files:
+            error = 1
+            problems.append("Argument -p/--reads-test: the name provided does not match any file in the directory /user_data.")
+        else:
+            if read_f == read_r:
+                error = 1
+                problems.append("Argument -p/--reads-test: the two names provided are identical.")
 
-	# If snp mode, check control reads
-	if workflow == "snp":
-		
-		if reads_control == "n/p":
-			error = 1
-			problems.append("Argument -c/--reads-control is required. Alternatively, you can use the -sim/--simulate-reads mode.")
-		else:
-			RC = reads_control.split(",") 
-			if len(RC) == 1:
-				lib_type_control = "se" 
-				read_s_control = reads_control
-			elif len(RC) == 2:
-				lib_type_control ="pe"
-				read_f_control = RC[0]
-				read_r_control = RC[1]
-		
-		if lib_type_control == "pe":
-			if read_f_control not in input_files:
-				error = 1
-				problems.append("Argument -c/--reads-control: the first name provided does not match any file in the directory /user_data.")
-			if read_r_control not in input_files:
-				error = 1
-				problems.append("Argument -c/--reads-control: the second name provided does not match any file in the directory /user_data.")
-			else:
-				if read_f_control == read_r_control:
-					error = 1
-					problems.append("Argument -c/--reads-control: the two names provided are identical.")
-		
-		if lib_type_control == "se":
-			if reads_control not in input_files:
-				error = 1
-				problems.append("Argument -c/--reads-control: the name provided does not match any file in the directory /user_data.")
+    # If snp mode, check control reads
+    if workflow == "snp":
+        
+        if reads_control == "n/p":
+            error = 1
+            problems.append("Argument -c/--reads-control is required. Alternatively, you can use the -sim/--simulate-reads mode.")
+        else:
+            RC = reads_control.split(",") 
+            if len(RC) == 1:
+                lib_type_control = "se" 
+                read_s_control = reads_control
+            elif len(RC) == 2:
+                lib_type_control ="pe"
+                read_f_control = RC[0]
+                read_r_control = RC[1]
+        
+        if lib_type_control == "pe":
+            if read_f_control not in input_files:
+                error = 1
+                problems.append("Argument -c/--reads-control: the first name provided does not match any file in the directory /user_data.")
+            if read_r_control not in input_files:
+                error = 1
+                problems.append("Argument -c/--reads-control: the second name provided does not match any file in the directory /user_data.")
+            else:
+                if read_f_control == read_r_control:
+                    error = 1
+                    problems.append("Argument -c/--reads-control: the two names provided are identical.")
+        
+        if lib_type_control == "se":
+            if reads_control not in input_files:
+                error = 1
+                problems.append("Argument -c/--reads-control: the name provided does not match any file in the directory /user_data.")
 
-		if reads_control == reads_sample:
-			error = 1
-			problems.append("The same name was provided to arguments -p/--reads-test and -c/--reads-control.")
+        if reads_control == reads_sample:
+            error = 1
+            problems.append("The same name was provided to arguments -p/--reads-test and -c/--reads-control.")
 
 # Deal with the --low-stringency parameter
 if workflow == "snp":
-	if args.stringency:
-		stringency = "low_stringency"
-	else:
-		stringency = "high_stringency"
+    if args.stringency:
+        stringency = "low_stringency"
+    else:
+        stringency = "high_stringency"
 else:
-	stringency = "n/p"
+    stringency = "n/p"
 
 # This code checks the configuration of the program. It calls allow-new-project.py and checks its result.
-proc = subprocess.Popen("../src/Python-2.7.18/.localpython/bin/python2 allow-new-project.py", cwd=r'./config', shell=True, stdout=subprocess.PIPE)
-script_response = proc.stdout.read()
+proc = subprocess.Popen("../src/Python-3.12.3/.localpython/bin/python3 allow-new-project.py", cwd=r'./config', shell=True, stdout=subprocess.PIPE)
+script_response = proc.stdout.read().decode('utf-8')
 response = script_response.split(",")
 try:
-	if int(response[0]) >= 100:
-		error = 1; problems.append("The number of gigabytes in the folders /user_data and /user_projects exceeds the maximum allowed in the /config/config file ("+response[2].strip()+" Gb).")
+    if int(response[0]) >= 100:
+        error = 1; problems.append("The number of gigabytes in the folders /user_data and /user_projects exceeds the maximum allowed in the /config/config file ("+response[2].strip()+" Gb).")
 except:
-	error = 1; problems.append(response[0])
+    error = 1; problems.append(response[0])
 try:
-	int(response[1])
-	if int(response[1]) >= 100:
-		error = 1; problems.append("The number of projects currently running exceeds the maximum allowed in the config/config file ("+response[3].strip()+" project) [Manually killed projects can be interpreted as running by easymap. This can be solved by removing the project folder]")
+    int(response[1])
+    if int(response[1]) >= 100:
+        error = 1; problems.append("The number of projects currently running exceeds the maximum allowed in the config/config file ("+response[3].strip()+" project) [Manually killed projects can be interpreted as running by easymap. This can be solved by removing the project folder]")
 except:
-	error = 1; problems.append(response[1])
+    error = 1; problems.append(response[1])
 
 
 if error == 1: 
-	print "=======================================================\nCOMMAND ERROR. Please fix the following issues:"
-	for items in problems:
-		print "-" + items
-	print generic_help_message
-	print "======================================================="
-	quit()	
+    print("=======================================================\nCOMMAND ERROR. Please fix the following issues:")
+    for items in problems:
+        print(("-" + items))
+    print(generic_help_message)
+    print("=======================================================")
+    quit()	
 
 
 # Run easymap.sh

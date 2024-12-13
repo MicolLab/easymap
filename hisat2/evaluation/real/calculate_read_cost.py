@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys, os, subprocess, signal
 import multiprocessing
@@ -411,7 +411,7 @@ def getSNPs(chr_snps, left, right):
             high = mid - 1
 
     snps = []
-    for i in xrange(low, len(chr_snps)):
+    for i in range(low, len(chr_snps)):
         snp = chr_snps[i]
         snpID, type, pos, data = snp
         pos2 = pos

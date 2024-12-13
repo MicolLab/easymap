@@ -37,8 +37,6 @@
 
 
 import argparse
-from string import maketrans
-
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
@@ -115,7 +113,7 @@ def dna_to_prot(dna_seq):
 
 # Function to obtain the reverse complementary of a DNA sequence
 def reverse_complementary(seq):
-	revcomp = seq.translate(maketrans('ACGT', 'TGCA'))[::-1]
+	revcomp = seq.translate(str.maketrans('ACGT', 'TGCA'))[::-1]
 	return revcomp
 
 

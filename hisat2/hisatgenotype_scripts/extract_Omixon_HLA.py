@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Copyright 2016, Daehwan Kim <infphilo@gmail.com>
@@ -44,9 +44,9 @@ if __name__ == '__main__':
                     nuc_alleles[gene] = set()
                 nuc_alleles[gene].add(allele)
 
-    print >> sys.stderr, "IMGTHLA"
-    for gene, alleles in nuc_alleles.items():
-        print >> sys.stderr, "\t%s: %d alleles" % (gene, len(alleles))
+    print("IMGTHLA", file=sys.stderr)
+    for gene, alleles in list(nuc_alleles.items()):
+        print("\t%s: %d alleles" % (gene, len(alleles)), file=sys.stderr)
 
     # Read HLA alleles from Omixon data
     omixon_alleles = {}
@@ -95,11 +95,11 @@ if __name__ == '__main__':
             omixon_alleles[gene].add(allele2)
             prev_allele1, prev_allele2 = allele1, allele2
 
-            print "%s\t%s\t%s" % (genome, allele1, allele2)
+            print("%s\t%s\t%s" % (genome, allele1, allele2))
 
-    print >> sys.stderr, "Omixon"
-    for gene, alleles in omixon_alleles.items():
-        print >> sys.stderr, "\t%s: %d alleles" % (gene, len(alleles))
+    print("Omixon", file=sys.stderr)
+    for gene, alleles in list(omixon_alleles.items()):
+        print("\t%s: %d alleles" % (gene, len(alleles)), file=sys.stderr)
         for allele in alleles:
             if allele in nuc_alleles[gene]:
                 continue
@@ -110,6 +110,6 @@ if __name__ == '__main__':
                     break                    
 
             if not found:
-                print >> sys.stderr, "\t\t%s is missing" % allele
+                print("\t\t%s is missing" % allele, file=sys.stderr)
 
             

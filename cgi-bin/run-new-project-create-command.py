@@ -1,11 +1,11 @@
-#!src/Python-2.7.18/.localpython/bin/python2
+#!src/Python-3.12.3/.localpython/bin/python3
 
 import cgi, cgitb, subprocess
 cgitb.enable()
 
 arguments = cgi.FieldStorage()
 
-print 'Content-type:text/html\r\n\r\n'
+print('Content-type:text/html\r\n\r\n')
 
 cmdString = str(arguments['program'].value) + ' ' + \
 			str(arguments['project_name'].value) + ' ' + \
@@ -33,11 +33,9 @@ cmdString = str(arguments['program'].value) + ' ' + \
 			str(arguments['stringency'].value)
 
 processedCmdString = cmdString.replace('~', '+');
-print processedCmdString
+print(processedCmdString)
 
 # For testing only
 #cmdString = './easymap.sh test ins sim nano pbinprok2.fa complete.gff TAIR10_gene_info.txt n/p n/p n/p se n/p n/p n/p se n/p n/p n/p n/p 1+li n/p 10+100,0+500,100+1+50+se n/p'
 
 subprocess.Popen(processedCmdString, cwd=r'./', shell=True, stdout=subprocess.PIPE)
-
-

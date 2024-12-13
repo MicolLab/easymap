@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright 2017, Daehwan Kim <infphilo@gmail.com>
 #
@@ -248,12 +248,12 @@ def extract_database_if_not_exists(base,
     # DK - debugging purposes
     # extract_cmd += ["--ext-seq", "300"]
     if verbose:
-        print >> sys.stderr, "\tRunning:", ' '.join(extract_cmd)
+        print("\tRunning:", ' '.join(extract_cmd), file=sys.stderr)
     proc = subprocess.Popen(extract_cmd, stdout=open("/dev/null", 'w'), stderr=open("/dev/null", 'w'))
     proc.communicate()
 
     if not check_files(fnames):
-        print >> sys.stderr, "Error: hisatgenotype_extract_vars failed!"
+        print("Error: hisatgenotype_extract_vars failed!", file=sys.stderr)
         sys.exit(1)
 
         
@@ -276,11 +276,11 @@ def build_index_if_not_exists(base,
                              "%s_backbone.fa" % base,
                              "%s.graph" % base]
                 if verbose:
-                    print >> sys.stderr, "\tRunning:", ' '.join(build_cmd)
+                    print("\tRunning:", ' '.join(build_cmd), file=sys.stderr)
                 proc = subprocess.Popen(build_cmd, stdout=open("/dev/null", 'w'), stderr=open("/dev/null", 'w'))
                 proc.communicate()        
                 if not check_files(hisat2_graph_index_fnames):
-                    print >> sys.stderr, "Error: indexing HLA failed!  Perhaps, you may have forgotten to build hisat2 executables?"
+                    print("Error: indexing HLA failed!  Perhaps, you may have forgotten to build hisat2 executables?", file=sys.stderr)
                     sys.exit(1)
         # Build HISAT2 linear indexes based on the above information
         else:
@@ -293,21 +293,21 @@ def build_index_if_not_exists(base,
                 proc = subprocess.Popen(build_cmd, stdout=open("/dev/null", 'w'), stderr=open("/dev/null", 'w'))
                 proc.communicate()        
                 if not check_files(hisat2_linear_index_fnames):
-                    print >> sys.stderr, "Error: indexing HLA failed!"
+                    print("Error: indexing HLA failed!", file=sys.stderr)
                     sys.exit(1)                    
     else:
         # Build Bowtie2 indexes based on the above information
         assert aligner == "bowtie2" and index_type == "linear"        
         bowtie2_index_fnames = ["%s.%d.bt2" % (base, i+1) for i in range(4)]
         bowtie2_index_fnames += ["%s.rev.%d.bt2" % (base, i+1) for i in range(2)]
-        if not tcheck_files(bowtie2_index_fnames):
+        if not check_files(bowtie2_index_fnames):
             build_cmd = ["bowtie2-build",
                          "%s_backbone.fa,%s_sequences.fa" % (base, base),
                          base]
             proc = subprocess.Popen(build_cmd, stdout=open("/dev/null", 'w'))
             proc.communicate()        
             if not check_files(bowtie2_index_fnames):
-                print >> sys.stderr, "Error: indexing HLA failed!"
+                print("Error: indexing HLA failed!", file=sys.stderr)
                 sys.exit(1)
 
                     
@@ -492,7 +492,7 @@ def simulate_reads(seq_dic,                       # seq_dic["A"]["A*24:36N"] = "
 
             # Extract variants included in each allele
             var_ids = []
-            for var_id, allele_list in Links.items():
+            for var_id, allele_list in list(Links.items()):
                 if allele_name in allele_list:
                     var_ids.append(var_id)
 
@@ -569,8 +569,8 @@ def simulate_reads(seq_dic,                       # seq_dic["A"]["A*24:36N"] = "
             query_name = "%d|%s_%s" % (read_i + 1, "LR"[idx-1], reads[read_i][1])
             if len(query_name) > 254:
                 query_name = query_name[:254]
-            print >> read_file, ">%s" % query_name
-            print >> read_file, reads[read_i][0]
+            print(">%s" % query_name, file=read_file)
+            print(reads[read_i][0], file=read_file)
         read_file.close()
     write_reads(reads_1, 1)
     write_reads(reads_2, 2)
@@ -626,7 +626,7 @@ def align_reads(aligner,
                         "-2", "%s" % read_fname[1]]
 
     if verbose >= 1:
-        print >> sys.stderr, ' '.join(aligner_cmd)
+        print(' '.join(aligner_cmd), file=sys.stderr)
     align_proc = subprocess.Popen(aligner_cmd,
                                   stdout=subprocess.PIPE,
                                   stderr=open("/dev/null", 'w'))
@@ -730,7 +730,7 @@ def get_mpileup(alignview_cmd,
         num_nt = sum(nt_dic.values())
         nt_set = []
         if num_nt >= 20:
-            for nt, count in nt_dic.items():
+            for nt, count in list(nt_dic.items()):
                 if nt not in "ACGT":
                     continue
                 if count >= num_nt * 0.2 or count >= 7:
@@ -739,7 +739,7 @@ def get_mpileup(alignview_cmd,
 
     # Sort variants
     var_list = [[] for i in range(len(mpileup))]
-    for var_id, value in vars.items():
+    for var_id, value in list(vars.items()):
         var_type, var_pos, var_data = value
         assert var_pos < len(var_list)
         var_list[var_pos].append([var_id, var_type, var_data])
@@ -750,7 +750,7 @@ def get_mpileup(alignview_cmd,
         nt_dic = mpileup[i][1]
         ref_nt = ref_seq[i]
         new_nt_dic = {}
-        for nt, count in nt_dic.items():
+        for nt, count in list(nt_dic.items()):
             var_id = ""
             if nt == 'D':
                 if i <= skip_i:
@@ -826,7 +826,7 @@ def get_pair_interdist(alignview_cmd,
         else:
             concordant = False
 
-        NH, YT = sys.maxint, ""
+        NH, YT = sys.maxsize, ""
         for i in range(11, len(cols)):
              col = cols[i]
              if col.startswith("NH"):
@@ -878,7 +878,7 @@ def get_pair_interdist(alignview_cmd,
 """
 def prob_diff(prob1, prob2):
     diff = 0.0
-    for allele in prob1.keys():
+    for allele in list(prob1.keys()):
         if allele in prob2:
             diff += abs(prob1[allele] - prob2[allele])
         else:
@@ -908,20 +908,20 @@ def single_abundance(Gene_cmpt,
                      Gene_length = {}):
     def normalize(prob):
         total = sum(prob.values())
-        for allele, mass in prob.items():
+        for allele, mass in list(prob.items()):
             prob[allele] = mass / total        
 
     def normalize_len(prob, length):
         total = 0
-        for allele, mass in prob.items():
+        for allele, mass in list(prob.items()):
             assert allele in length
             total += (mass / length[allele])
-        for allele, mass in prob.items():
+        for allele, mass in list(prob.items()):
             assert allele in length
             prob[allele] = mass / length[allele] / total
 
     Gene_prob, Gene_prob_next = {}, {}
-    for cmpt, count in Gene_cmpt.items():
+    for cmpt, count in list(Gene_cmpt.items()):
         alleles = cmpt.split('-')
         for allele in alleles:
             if allele not in Gene_prob:
@@ -934,7 +934,7 @@ def single_abundance(Gene_cmpt,
 
     def next_prob(Gene_cmpt, Gene_prob, Gene_length):
         Gene_prob_next = {}
-        for cmpt, count in Gene_cmpt.items():
+        for cmpt, count in list(Gene_cmpt.items()):
             alleles = cmpt.split('-')
             alleles_prob = 0.0
             for allele in alleles:
@@ -960,7 +960,7 @@ def single_abundance(Gene_cmpt,
             return Gene_prob
         Gene_prob2 = {}
         max_prob = max(Gene_prob.values())
-        for allele, prob in Gene_prob.items():
+        for allele, prob in list(Gene_prob.items()):
             if prob >= max_prob / 10.0:
                 Gene_prob2[allele] = prob
         return Gene_prob2
@@ -976,14 +976,14 @@ def single_abundance(Gene_cmpt,
             Gene_prob_next2 = next_prob(Gene_cmpt, Gene_prob_next, Gene_length)
             sum_squared_r, sum_squared_v = 0.0, 0.0
             p_r, p_v = {}, {}
-            for a in Gene_prob.keys():
+            for a in list(Gene_prob.keys()):
                 p_r[a] = Gene_prob_next[a] - Gene_prob[a]
                 sum_squared_r += (p_r[a] * p_r[a])
                 p_v[a] = Gene_prob_next2[a] - Gene_prob_next[a] - p_r[a]
                 sum_squared_v += (p_v[a] * p_v[a])
             if sum_squared_v > 0.0:
                 gamma = -math.sqrt(sum_squared_r / sum_squared_v)
-                for a in Gene_prob.keys():
+                for a in list(Gene_prob.keys()):
                     Gene_prob_next2[a] = max(0.0, Gene_prob[a] - 2 * gamma * p_r[a] + gamma * gamma * p_v[a]);
                 Gene_prob_next = next_prob(Gene_cmpt, Gene_prob_next2, Gene_length)
 
@@ -996,10 +996,10 @@ def single_abundance(Gene_cmpt,
 
         # DK - debugging purposes
         if iter % 10 == 0 and False:
-            print >> sys.stderr, "iter", iter
-            for allele, prob in Gene_prob.items():
+            print("iter", iter, file=sys.stderr)
+            for allele, prob in list(Gene_prob.items()):
                 if prob >= 0.001:
-                    print >> sys.stderr, "\t", iter, allele, prob
+                    print("\t", iter, allele, prob, file=sys.stderr)
         
         iter += 1
 
@@ -1009,7 +1009,7 @@ def single_abundance(Gene_cmpt,
             normalize_len(Gene_prob, Gene_length)
     else:
         normalize(Gene_prob)
-    Gene_prob = [[allele, prob] for allele, prob in Gene_prob.items()]
+    Gene_prob = [[allele, prob] for allele, prob in list(Gene_prob.items())]
     Gene_prob = sorted(Gene_prob, cmp=Gene_prob_cmp)
     return Gene_prob
 
@@ -1034,7 +1034,7 @@ def get_alternatives(ref_seq,     # GATAACTAGATACATGAGATAGATTTGATAGATAGATAGATACA
                      verbose):
     haplotype_alts_left, haplotype_alts_right = {}, {}
     second_order_haplotypes = set()
-    for allele_name, vars in allele_vars.items():
+    for allele_name, vars in list(allele_vars.items()):
         for v in range(len(vars) - 1):
             ht = vars[v] + "-" + vars[v+1]
             second_order_haplotypes.add(ht)
@@ -1066,7 +1066,7 @@ def get_alternatives(ref_seq,     # GATAACTAGATACATGAGATAGATTTGATAGATAGATAGATACA
                 prev_id = haplotype[1]        
 
             var_i = lower_bound(rev_Var_list, pos + 1)
-            for var_j in reversed(range(0, var_i)):
+            for var_j in reversed(list(range(0, var_i))):
                 _, var_id = rev_Var_list[var_j]
                 var_type, var_pos, var_data = Vars[var_id]
                 if var_type == "deletion":
@@ -1230,16 +1230,16 @@ def get_alternatives(ref_seq,     # GATAACTAGATACATGAGATAGATTTGATAGATAGATAGATACA
 
     # Print alternative haplotypes / Sanity check
     def print_haplotype_alts(haplotype_alts):
-        for haplotype, haplotype_set in haplotype_alts.items():
-            if verbose: print "\t%s:" % haplotype, haplotype_set
+        for haplotype, haplotype_set in list(haplotype_alts.items()):
+            if verbose: print("\t%s:" % haplotype, haplotype_set)
             haplotype_seq = get_haplotype_seq(haplotype.split('-'))
             for haplotype_alt in haplotype_set:
                 haplotype_alt_seq = get_haplotype_seq(haplotype_alt.split('-'))
                 assert haplotype_seq == haplotype_alt_seq            
 
-    if verbose: print "number of left haplotypes:", len(haplotype_alts_left)
+    if verbose: print("number of left haplotypes:", len(haplotype_alts_left))
     print_haplotype_alts(haplotype_alts_left)
-    if verbose: print "number of right haplotypes:", len(haplotype_alts_right)
+    if verbose: print("number of right haplotypes:", len(haplotype_alts_right))
     print_haplotype_alts(haplotype_alts_right)
 
     return haplotype_alts_left, haplotype_alts_right
@@ -1287,7 +1287,7 @@ def identify_ambigious_diffs(ref_seq,
 
     # Left direction
     found = False
-    for i in reversed(range(len(cmp_list))):
+    for i in reversed(list(range(len(cmp_list)))):
         i_found = False
         cmp_i = cmp_list[i]
         type, cur_left, length = cmp_i[:3]
@@ -1309,7 +1309,7 @@ def identify_ambigious_diffs(ref_seq,
         else:
             cur_ht_str = "%d-%s" % (left, '-'.join(cur_ht))
         ht_i = lower_bound(Alts_left_list, cur_right + 1)
-        for ht_j in reversed(range(0, min(ht_i + 1, len(Alts_left_list)))):
+        for ht_j in reversed(list(range(0, min(ht_i + 1, len(Alts_left_list))))):
             ht_pos, ht = Alts_left_list[ht_j]
             if ht_pos < cur_left:
                 break            
@@ -1335,15 +1335,15 @@ def identify_ambigious_diffs(ref_seq,
 
             i_found = True
             if debug:
-                print cmp_list[:i+1]
-                print "\t", cur_ht, "vs", Alts_left_list[ht_j]
+                print(cmp_list[:i+1])
+                print("\t", cur_ht, "vs", Alts_left_list[ht_j])
 
             _, rep_ht = Alts_left_list[ht_j]
 
             if debug:
-                print "DK1:", cmp_i, cmp_list
-                print "DK2:", rep_ht, Alts_left[rep_ht]
-                print "DK3:", left, right
+                print("DK1:", cmp_i, cmp_list)
+                print("DK2:", rep_ht, Alts_left[rep_ht])
+                print("DK3:", left, right)
 
             for alt_ht_str in Alts_left[rep_ht]:
                 alt_ht = alt_ht_str.split('-')
@@ -1393,7 +1393,7 @@ def identify_ambigious_diffs(ref_seq,
                     left_alt_set.add(part_alt_ht_str)
                         
                 if debug:
-                    print "\t\t", cur_left, alt_ht_str
+                    print("\t\t", cur_left, alt_ht_str)
 
         if i_found:
             if not found:
@@ -1455,9 +1455,9 @@ def identify_ambigious_diffs(ref_seq,
             _, rep_ht = Alts_right_list[ht_j]
 
             if debug:
-                print "DK1:", cmp_i, cmp_list
-                print "DK2:", rep_ht, Alts_right[rep_ht]
-                print "DK3:", left, right, ht_pos
+                print("DK1:", cmp_i, cmp_list)
+                print("DK2:", rep_ht, Alts_right[rep_ht])
+                print("DK3:", left, right, ht_pos)
 
             for alt_ht_str in Alts_right[rep_ht]:
                 alt_ht = alt_ht_str.split('-')
@@ -1525,12 +1525,12 @@ def identify_ambigious_diffs(ref_seq,
         if ht == "":
             continue
         if ht in ht_set_:
-            print >> sys.stderr, "Error) %s should not be in" % ht, ht_set_
+            print("Error) %s should not be in" % ht, ht_set_, file=sys.stderr)
 
             # DK - debugging purposes
-            print "DK: cmp_list_range: [%d, %d]" % (cmp_left, cmp_right)
-            print "DK: cmp_list:", cmp_list
-            print "DK: left_alt_set:", left_alt_set, "right_alt_set:", right_alt_set
+            print("DK: cmp_list_range: [%d, %d]" % (cmp_left, cmp_right))
+            print("DK: cmp_list:", cmp_list)
+            print("DK: left_alt_set:", left_alt_set, "right_alt_set:", right_alt_set)
             
             assert False
         ht_set_.add(ht)
@@ -1539,14 +1539,13 @@ def identify_ambigious_diffs(ref_seq,
         if ht == "":
             continue
         if ht in ht_set_:
-            print >> sys.stderr, "Error) %s should not be in" % ht, ht_set_
+            print("Error) %s should not be in" % ht, ht_set_, file=sys.stderr)
             assert False
         ht_set_.add(ht)
 
     if debug:
-        print "cmp_list_range: [%d, %d]" % (cmp_left, cmp_right)
-        print "left  alt set:", left_alt_set
-        print "right alt set:", right_alt_set
+        print("cmp_list_range: [%d, %d]" % (cmp_left, cmp_right))
+        print("left  alt set:", left_alt_set)
+        print("right alt set:", right_alt_set)
     
     return cmp_left, cmp_right, list(left_alt_set), list(right_alt_set)
-
