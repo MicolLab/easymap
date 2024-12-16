@@ -1,6 +1,6 @@
 #!src/Python-3.12.3/.localpython/bin/python3
 
-import cgi, cgitb, html
+import cgi, cgitb
 cgitb.enable()
 
 print("Content-type:text/html\r\n\r\n") 
@@ -24,7 +24,7 @@ with open('user_data/' + fileName) as fileName:
 	print('<pre>')
 	for line in fileName:
 		#print line.strip()
-		print(html.escape(line.strip()).encode('ascii', 'xmlcharrefreplace'))
+		print(cgi.escape(line.strip()).encode('ascii', 'xmlcharrefreplace'))
 		c+=1
 		if c == nbrOfLines: break
 	print('</pre>')
